@@ -14,7 +14,7 @@ target/
 *.iws
 *.iml
 *.ipr
-
+.mvn
 ### NetBeans ###
 nbproject/private/
 build/
@@ -22,3 +22,4 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+authentication.properties
