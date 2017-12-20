@@ -27,9 +27,14 @@ public class HuobiApplication implements CommandLineRunner {
         Runnable runnable = () -> {
             try {
                 while (true) {
-                    Account myAccount = client.getAccounts().get(0);
-                    CoinBalance balance = client.allMyBlance(myAccount.getId());
-                    balance.removeEmptyCoin().printAllCoins();
+                    double rmb = 0;
+                    List<Account> accounts = client.getAccounts();
+                    for (Account account : accounts) {
+                        CoinBalance balance = client.allMyBlance(account.getId());
+                        rmb += balance.removeEmptyCoin().printAllCoins();
+                    }
+                    System.out.println("【实时】总价值RMB约: " + rmb);
+                    System.out.println("---------------------------------------------------");
                     sleep(10000);
                 }
             } catch (Exception e) {

@@ -1,6 +1,8 @@
 package site.binghai.coin.entity;
 
 import lombok.Data;
+import site.binghai.coin.client.ApiClient;
+import site.binghai.coin.utils.TimeFormat;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,9 +30,27 @@ public class CoinBalance {
     /**
      * 打印资产列表
      */
-    public void printAllCoins() {
+    public double printAllCoins() {
+        list.forEach(v -> v.setMarket(type));
+        System.out.println(TimeFormat.format(System.currentTimeMillis()));
         list.forEach(v -> System.out.println(v.asString()));
         Double sumBtc = list.stream().map(v -> v.getSumPrice()).reduce(0.0, Double::sum);
-        System.out.println("合计BTC : " + sumBtc);
+        double rs = sumBtc * ApiClient.commonCoreParams.getBtc2rmb() * getDeviationRate();
+        System.out.println("合计BTC : " + sumBtc + " ,约合人民: " + rs);
+        return rs;
+    }
+
+    /**
+     * 计算偏差修正
+     */
+    private Double getDeviationRate() {
+        switch (type) {
+            case "otc":
+                return ApiClient.commonCoreParams.getSpotDeviationRate();
+            case "margin":
+                return ApiClient.commonCoreParams.getMarginDeviationRate();
+            default:
+                return ApiClient.commonCoreParams.getSpotDeviationRate();
+        }
     }
 }

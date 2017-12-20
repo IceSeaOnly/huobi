@@ -29,6 +29,7 @@ import okhttp3.Response;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import site.binghai.coin.entity.Coin;
 import site.binghai.coin.entity.CoinBalance;
 import site.binghai.coin.request.CreateOrderRequest;
@@ -45,8 +46,11 @@ import site.binghai.coin.utils.JsonUtil;
 @Component
 public class ApiClient implements InitializingBean {
     public static ApiClient commonClient;
+    public static CoreParams commonCoreParams;
     @Autowired
     private AuthParams authParams;
+    @Autowired
+    private CoreParams coreParams;
 
     static final int CONN_TIMEOUT = 5;
     static final int READ_TIMEOUT = 5;
@@ -104,8 +108,13 @@ public class ApiClient implements InitializingBean {
         params.put("size", "1");
         params.put("symbol", coin.getCurrency().toLowerCase() + "btc");
         JSONObject obj = jsonGet("/market/history/kline", params);
-        return obj.getString("status").equals("ok") ?
-                obj.getJSONArray("data").getJSONObject(0) : null;
+        if (obj.getString("status").equals("ok")) {
+            if (!CollectionUtils.isEmpty(obj.getJSONArray("data"))) {
+                return obj.getJSONArray("data").getJSONObject(0);
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -215,6 +224,7 @@ public class ApiClient implements InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         commonClient = this;
+        commonCoreParams = this.coreParams;
     }
 }
 
