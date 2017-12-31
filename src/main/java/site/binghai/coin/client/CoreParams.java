@@ -1,24 +1,24 @@
 package site.binghai.coin.client;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by binghai on 2017/12/20.
  *
  * @ huobi
  */
-@Component
-@ConfigurationProperties(prefix = "param")
-@PropertySource("classpath:authentication.properties")
-@Data
 public class CoreParams {
-    private double btc2rmb;
-    private double usdt2rmb;
-    private double marginRate;
-    private double spotDeviationRate;
-    private double marginDeviationRate;
-    private double otcDeviationRate;
+    public static double usdt2rmb = 6.55;
+
+    private static Set<Long> btcAccounts = new HashSet();
+
+    static {
+        btcAccounts.addAll(Arrays.asList(463593L, 964661L));
+    }
+
+    public static boolean isBtcAccount(long accountId) {
+        return btcAccounts.contains(accountId);
+    }
 }

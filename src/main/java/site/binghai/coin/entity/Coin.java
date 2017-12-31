@@ -1,8 +1,8 @@
 package site.binghai.coin.entity;
 
-import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
-import site.binghai.coin.client.ApiClient;
+import site.binghai.coin.client.CoreParams;
+import site.binghai.coin.utils.CoinUtils;
 
 import java.text.DecimalFormat;
 
@@ -15,49 +15,33 @@ import java.text.DecimalFormat;
 public class Coin {
     private double balance;
     private String currency; //币种
+    private String settlementCoin = "btc";
     private String type; //trade or frozen
     private String market; // otc 法币交易 margin 杠杆交易 spot 币币交易
-    private double sumPrice; // 转换成btc
+    private double sumPrice; // 转换成rmb
 
+    public double getSumPrice() {
+        sumPrice = getCurrentPriceValuation() * balance;
+        System.out.println(asString());
+        return sumPrice;
+    }
 
     public String asString() {
         DecimalFormat df = new DecimalFormat("###############0.0000000000 ");
-        Double v = getCurrentPriceValuation();
-
-        return getMarketType() + (type.equals("trade") ? "交易中的" : "被冻结的") +
-                currency.toUpperCase() +
-                " : " + df.format(balance) +
-                (v == null ? "" : " ,估值BTC " + df.format(v));
+        return String.format("%6s %6s   %s  %16s %s", currency.toUpperCase(), type.equals("trade") ? "交易中" : "冻结中", settlementCoin.toUpperCase(), df.format(balance), df.format(sumPrice));
     }
 
+    /**
+     * 获取当前单个币价值
+     * 计算单位 RMB
+     */
     public Double getCurrentPriceValuation() {
-        JSONObject data = ApiClient.commonClient.currentPriceValuation(this);
-        if (data == null) {
-            if (currency.equals("btc")) {
-                sumPrice = balance; // btc本币
-            } else {
-                sumPrice = 0; // 不参与计算
-            }
-            return null;
+        if (currency.equals("btc")) {
+            return CoinUtils.btc2rmb(); // btc本币
+        } else if (currency.equals("usdt")) {
+            return CoreParams.usdt2rmb;
         }
-        double low = data.getDouble("low");
-        double high = data.getDouble("high");
-        double avg = (low + high) / 2;
-        return sumPrice = avg * balance / (market.equals("margin") ? ApiClient.commonCoreParams.getMarginRate() : 1);
-    }
-
-    public String getMarketType() {
-        String rs = " | ";
-        switch (market) {
-            case "otc":
-                rs = "法币" + rs;
-                break;
-            case "margin":
-                rs = "杠杆" + rs;
-                break;
-            default:
-                rs = "币币" + rs;
-        }
-        return rs;
+        return CoinUtils.currentPrice(this) *
+                ("btc".equals(getSettlementCoin()) ? CoinUtils.btc2rmb() : CoreParams.usdt2rmb);
     }
 }
