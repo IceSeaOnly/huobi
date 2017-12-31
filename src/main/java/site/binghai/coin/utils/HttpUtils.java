@@ -5,6 +5,7 @@ package site.binghai.coin.utils;
  */
 
 import com.alibaba.fastjson.JSONObject;
+import site.binghai.coin.client.ApiClient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Map;
 
 public class HttpUtils {
     /**

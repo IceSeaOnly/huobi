@@ -3,6 +3,11 @@ package site.binghai.coin.utils;
 import com.alibaba.fastjson.JSONObject;
 import site.binghai.coin.client.CoreParams;
 import site.binghai.coin.entity.Coin;
+import site.binghai.coin.entity.Kline;
+import site.binghai.coin.entity.KlineTime;
+import site.binghai.coin.response.Symbol;
+
+import java.util.List;
 
 /**
  * Created by binghai on 2017/12/31.
@@ -43,7 +48,26 @@ public class CoinUtils {
         return 0;
     }
 
-    public static void main(String[] args) {
-        System.out.println(btc2rmb());
+
+    public static List<Kline> getKlineList(String symbol, KlineTime klineTime, int size) {
+        JSONObject data = HttpUtils.sendJSONGet("http://api.huobi.pro/market/history/kline",
+                String.format("symbol=%s&period=%s&size=%d", symbol, klineTime.getTime(), size), null);
+
+        if (data != null && "ok".equals(data.getString("status"))) {
+            return data.getJSONArray("data").toJavaList(Kline.class);
+        }
+
+        return null;
+    }
+
+    /**
+     * 获取所有交易对
+     * */
+    public static List<Symbol> allSymbols() {
+        JSONObject data = HttpUtils.sendJSONGet("http://api.huobi.pro/v1/common/symbols", null, null);
+        if (data != null && "ok".equals(data.getString("status"))) {
+            return data.getJSONArray("data").toJavaList(Symbol.class);
+        }
+        return null;
     }
 }
