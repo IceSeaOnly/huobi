@@ -38,10 +38,13 @@ public class KlineScannerCron implements InitializingBean {
         allSymbols.stream()
                 .filter(v -> !coinFilter.contains(v.getBaseCurrency()))
                 .forEach(v -> {
-                    if (InitAllSymbolKline) {
-                        load2K(v);
-                    } else {
-                        loadLastKline(v);
+                    boolean rs = false;
+                    while (!rs) {
+                        if (InitAllSymbolKline) {
+                            rs = load2K(v);
+                        } else {
+                            rs = loadLastKline(v);
+                        }
                     }
                 });
         InitAllSymbolKline = false;
@@ -50,34 +53,46 @@ public class KlineScannerCron implements InitializingBean {
     /**
      * 批量拉取2000个记录
      */
-    private void load2K(Symbol symbol) {
+    private boolean load2K(Symbol symbol) {
         logger.info("get 2k record of {} {}", symbol.getBaseCurrency(), symbol.getQuoteCurrency());
 
-        List<Kline> rs = CoinUtils.getKlineList(symbol, KlineTime.MIN1, 2000);
-        if (!CollectionUtils.isEmpty(rs)) {
-            rs.forEach(v -> {
-                v.setCoinName(symbol.getBaseCurrency());
-                v.setQuoteCoinName(symbol.getQuoteCurrency());
-            });
-            klineService.batchSave(rs);
-            logger.info("{} records for {} {} has written to db successfully.", rs.size(), symbol.getBaseCurrency(), symbol.getQuoteCurrency());
+        try {
+            List<Kline> rs = CoinUtils.getKlineList(symbol, KlineTime.MIN1, 2000);
+            if (!CollectionUtils.isEmpty(rs)) {
+                rs.forEach(v -> {
+                    v.setCoinName(symbol.getBaseCurrency());
+                    v.setQuoteCoinName(symbol.getQuoteCurrency());
+                });
+                klineService.batchSave(rs);
+                logger.info("{} records for {} {} has written to db successfully.", rs.size(), symbol.getBaseCurrency(), symbol.getQuoteCurrency());
+            }
+        } catch (Exception e) {
+            logger.error("get 2k record of {} {} has errors!", symbol.getBaseCurrency(), symbol.getQuoteCurrency(), e);
+            return false;
         }
+        return true;
     }
 
     /**
      * 获取最新k线并写入db
      */
-    private void loadLastKline(Symbol symbol) {
+    private boolean loadLastKline(Symbol symbol) {
         logger.info("get lastest record of {} {}", symbol.getBaseCurrency(), symbol.getQuoteCurrency());
 
-        Kline kline = CoinUtils.getLastestKline(symbol);
-        if (kline != null) {
-            kline.setCoinName(symbol.getBaseCurrency());
-            kline.setQuoteCoinName(symbol.getQuoteCurrency());
+        try {
+            Kline kline = CoinUtils.getLastestKline(symbol);
+            if (kline != null) {
+                kline.setCoinName(symbol.getBaseCurrency());
+                kline.setQuoteCoinName(symbol.getQuoteCurrency());
 
-            logger.info("new record for {} {} is {}", symbol.getBaseCurrency(), symbol.getQuoteCurrency(), kline);
-            klineService.save(kline);
+                logger.info("new record for {} {} is {}", symbol.getBaseCurrency(), symbol.getQuoteCurrency(), kline);
+                klineService.save(kline);
+            }
+        } catch (Exception e) {
+            logger.error("get lastest record of {} {} has errors!", symbol.getBaseCurrency(), symbol.getQuoteCurrency(), e);
+            return false;
         }
+        return true;
     }
 
     @Override
