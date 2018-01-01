@@ -32,7 +32,7 @@ public class KlineScannerCron implements InitializingBean {
     @Autowired
     private KlineService klineService;
 
-    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0/30 * * * * ?")
     public void scan() {
         List<Symbol> allSymbols = CoinUtils.allSymbols();
         allSymbols.stream()

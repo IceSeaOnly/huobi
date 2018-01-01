@@ -30,6 +30,7 @@ public class HttpUtils {
             URL realUrl = new URL(urlNameString);
             // 打开和URL之间的连接
             URLConnection connection = realUrl.openConnection();
+            connection.setReadTimeout(3000);
             // 鉴权
             if (auth != null) {
                 connection.setRequestProperty("AuthData", auth);
@@ -81,6 +82,7 @@ public class HttpUtils {
             URL realUrl = new URL(url);
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
+            conn.setReadTimeout(3000);
             // 鉴权
             if (null != auth) {
                 conn.getHeaderFields().put("AuthData", Arrays.asList(auth));
