@@ -1,6 +1,6 @@
 package site.binghai.coin.common.response;
 
-import site.binghai.coin.web.client.ApiException;
+import site.binghai.coin.common.client.ApiException;
 
 /**
  * Created by binghai on 2017/12/19.

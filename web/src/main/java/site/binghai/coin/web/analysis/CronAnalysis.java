@@ -42,9 +42,9 @@ public class CronAnalysis {
 
         symbols.stream()
                 .filter(v -> !coinFilter.contains(v.getBaseCurrency()))
-                .filter(v -> coinFilter == null || v.getQuoteCurrency().toUpperCase().equals(filter))
+                .filter(v -> filter == null || v.getQuoteCurrency().toUpperCase().equals(filter))
                 .forEach(symbol -> {
-                    List<Kline> klines = CoinUtils.getKlineList(symbol.getBaseCurrency() + symbol.getQuoteCurrency(), KlineTime.MIN60, 30);
+                    List<Kline> klines = CoinUtils.getKlineList(symbol, KlineTime.MIN60, 30);
                     if (!CollectionUtils.isEmpty(klines)) {
                         Long zeroTs = TimeFormat.getTimesmorning() / 1000;
                         double current = klines.get(0).getClose();
@@ -74,10 +74,10 @@ public class CronAnalysis {
 
     /**
      * 获取最大涨幅处
-     * */
+     */
     public static Kline getMaxRise(Symbol symbol) {
         Long minuts = (System.currentTimeMillis() - TimeFormat.getTimesmorning()) / 60000;
-        List<Kline> ls = CoinUtils.getKlineList(symbol.getBaseCurrency() + symbol.getQuoteCurrency(), KlineTime.MIN1, minuts.intValue() + 2);
+        List<Kline> ls = CoinUtils.getKlineList(symbol, KlineTime.MIN1, minuts.intValue() + 2);
 
         Kline max = ls.stream()
                 .max((a, b) -> double2int(a.getClose() - b.getClose()))

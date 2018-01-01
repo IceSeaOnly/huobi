@@ -1,7 +1,7 @@
 package site.binghai.coin.common.entity;
 
 import lombok.Data;
-import site.binghai.coin.web.client.CoreParams;
+import site.binghai.coin.common.client.CoreParams;
 import site.binghai.coin.common.utils.CoinUtils;
 
 import java.text.DecimalFormat;

@@ -2,6 +2,10 @@ package site.binghai.coin.common.entity;
 
 import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * Created by binghai on 2017/12/31.
      "id": K线id,
@@ -15,8 +19,12 @@ import lombok.Data;
  * @ huobi
  */
 @Data
-public class Kline {
-    private long id;
+@Entity
+public class Kline extends DeleteAble{
+    @Id
+    @GeneratedValue
+    private long mainId;
+    private long id; // 此处id是火币id，也是火币提供的时间戳
     private double amount;
     private int count;
     private double open;
@@ -24,4 +32,7 @@ public class Kline {
     private double low;
     private double high;
     private double vol;
+
+    private String coinName; // 币种名称
+    private String quoteCoinName; // 计价币种
 }
