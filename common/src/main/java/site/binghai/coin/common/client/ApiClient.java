@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import site.binghai.coin.common.entity.AccountBalance;
+import site.binghai.coin.common.entity.HuobiOrder;
 import site.binghai.coin.common.request.CreateOrderRequest;
 import site.binghai.coin.common.response.Account;
 import site.binghai.coin.common.utils.HttpUtils;
@@ -81,6 +82,17 @@ public class ApiClient {
     private enum HttpType {
         GET,
         POST,;
+    }
+
+    /**
+     * 查询订单
+     */
+    public HuobiOrder queryOrder(Long orderId) {
+        JSONObject data = jsonGet("/v1/order/orders/" + orderId, null);
+        if (data != null && "ok".equals(data.getString("status"))) {
+            return data.getObject("data", HuobiOrder.class);
+        }
+        return null;
     }
 
     /**

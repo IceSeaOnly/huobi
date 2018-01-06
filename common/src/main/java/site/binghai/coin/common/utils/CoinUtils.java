@@ -3,6 +3,7 @@ package site.binghai.coin.common.utils;
 import com.alibaba.fastjson.JSONObject;
 import site.binghai.coin.common.client.CoreParams;
 import site.binghai.coin.common.entity.Coin;
+import site.binghai.coin.common.entity.HuobiOrder;
 import site.binghai.coin.common.entity.Kline;
 import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.response.Symbol;
