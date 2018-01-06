@@ -15,6 +15,8 @@ import java.net.URLConnection;
 import java.util.Arrays;
 
 public class HttpUtils {
+    private static final String server = "https://api.huobipro.com";
+
     /**
      * 向指定URL发送GET方法的请求
      *
@@ -129,12 +131,12 @@ public class HttpUtils {
     }
 
     public static JSONObject sendJSONGet(String url, String param, String auth) {
-        String res = sendGet(url, param, auth);
+        String res = sendGet(url.startsWith("/") ? server + url : url, param, auth);
         return JSONObject.parseObject(res);
     }
 
     public static JSONObject sendJSONPost(String url, String param, String auth) {
-        String res = sendPost(url, param, auth);
+        String res = sendPost(url.startsWith("/") ? server + url : url, param, auth);
         return JSONObject.parseObject(res);
     }
 }

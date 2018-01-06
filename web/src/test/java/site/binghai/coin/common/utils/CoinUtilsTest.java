@@ -27,7 +27,7 @@ public class CoinUtilsTest {
 
     @Test
     public void getKlineList() throws Exception {
-        List<Kline> ls = CoinUtils.getKlineList("xrpbtc", KlineTime.DAY, 30);
+        List<Kline> ls = CoinUtils.getKlineList(null, KlineTime.DAY, 30);
 
         Kline max = ls.stream()
                 .max((a, b) -> double2int(a.getClose() - b.getClose()))

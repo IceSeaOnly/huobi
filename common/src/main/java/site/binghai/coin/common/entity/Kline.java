@@ -33,6 +33,11 @@ public class Kline extends DeleteAble{
     private double high;
     private double vol;
 
+    private double bidPrice; // 买1价
+    private double bidAmount; // 买1量
+    private double askPrice; // 卖1价
+    private double askAmount; // 卖1量
+
     private String coinName; // 币种名称
     private String quoteCoinName; // 计价币种
 }
