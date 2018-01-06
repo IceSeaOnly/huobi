@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static site.binghai.coin.common.utils.CommonUtils.double2int;
+import static site.binghai.coin.common.utils.CommonUtils.cmpDouble2int;
 
 /**
  * Created by binghai on 2017/12/31.
@@ -56,7 +56,7 @@ public class CronAnalysis {
                     }
                 });
 
-        rises.sort((a, b) -> double2int(b.getRise() - a.getRise()));
+        rises.sort((a, b) -> cmpDouble2int(b.getRise() - a.getRise()));
         return rises;
     }
 
@@ -80,7 +80,7 @@ public class CronAnalysis {
         List<Kline> ls = CoinUtils.getKlineList(symbol, KlineTime.MIN1, minuts.intValue() + 2);
 
         Kline max = ls.stream()
-                .max((a, b) -> double2int(a.getClose() - b.getClose()))
+                .max((a, b) -> cmpDouble2int(a.getClose() - b.getClose()))
                 .orElseGet(null);
 
         return max;

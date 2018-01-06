@@ -6,7 +6,10 @@ package site.binghai.coin.common.utils;
  * @ huobi
  */
 public class CommonUtils {
-    public static int double2int(double v) {
+    /**
+     * 排序专用
+     * */
+    public static int cmpDouble2int(double v) {
         if (v > 0) {
             return 1;
         } else if (v < 0) {

@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @ huobi
  */
-@Component
+//@Component
 public class KlineScannerCron implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(KlineScannerCron.class);
 

@@ -20,6 +20,8 @@ import javax.xml.bind.DatatypeConverter;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import site.binghai.coin.common.entity.AccountBalance;
@@ -35,12 +37,46 @@ import site.binghai.coin.common.utils.JsonUtil;
  */
 @Component
 public class ApiClient {
+    private final Logger logger = LoggerFactory.getLogger(ApiClient.class);
+
     @Autowired
     private AuthParams authParams;
 
     static final String API_HOST = "api.huobi.pro";
 
     static final String API_URL = "https://" + API_HOST;
+
+    public double getBtcBalance() throws IOException {
+        double[] rs = {0.0};
+        List<Account> accounts = getAccounts();
+        accounts.forEach(account -> {
+            if (account.getType().equals("spot")) {
+                AccountBalance balance = accountBlance(account.getId());
+                balance.getList().forEach(cc -> {
+                    if (cc.getCurrency().toUpperCase().equals("BTC")) {
+                        rs[0] += cc.getBalance();
+                    }
+                });
+            }
+        });
+        return rs[0];
+    }
+
+    public long getBtcAccountId() throws IOException {
+        long[] rs = {0};
+        List<Account> accounts = getAccounts();
+        accounts.forEach(account -> {
+            if (account.getType().equals("spot")) {
+                AccountBalance balance = accountBlance(account.getId());
+                balance.getList().forEach(cc -> {
+                    if (cc.getCurrency().toUpperCase().equals("BTC") && cc.getBalance() > 0) {
+                        rs[0] = account.getId();
+                    }
+                });
+            }
+        });
+        return rs[0];
+    }
 
     private enum HttpType {
         GET,
@@ -65,8 +101,12 @@ public class ApiClient {
      * @return Order id.
      */
     public Long createOrder(CreateOrderRequest request) throws IOException {
-        post("/v1/order/orders", request, null, String.class);
-        return 1L;
+        JSONObject json = jsonCall(HttpType.POST, "/v1/order/orders/place", request, null);
+        if (json != null && "ok".equals(json.getString("status"))) {
+            return Long.parseLong(json.getString("data"));
+        }
+        logger.error("创建订单失败,request:{}, response:{}", request, json);
+        return -1L;
     }
 
     /**
@@ -105,8 +145,7 @@ public class ApiClient {
         sign.createSignature(authParams.getAccessKeyId(), authParams.getAccessKeySecret(), method == HttpType.GET ? "GET" : "POST", API_HOST, uri, params);
         String url = API_URL + uri;
         if (method == HttpType.POST) {
-            params.putAll(JSONObject.parseObject(JSONObject.toJSONString(object)));
-            return HttpUtils.sendJSONPost(url, toQueryString(params), null);
+            return HttpUtils.sendJSONPost(url, toQueryString(params), JSONObject.toJSONString(object), null);
         } else {
             return HttpUtils.sendJSONGet(url, toQueryString(params), null);
         }
