@@ -26,8 +26,6 @@ import java.io.IOException;
 public class Huobi7day2018 {
     private final Logger logger = LoggerFactory.getLogger(Huobi7day2018.class);
     @Autowired
-    private AuthParams authParams;
-    @Autowired
     private ApiClient apiClient;
 
     private static String lastCoin = null;
@@ -36,7 +34,7 @@ public class Huobi7day2018 {
      * 线上每小时运行一次 @Scheduled(cron = "0 0 * * * ?")
      * 测试每分钟运行一次 @Scheduled(cron = "0 * * * * ?")
      */
-    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0/10 * * * * ?")
     public void TimeWaiter() throws IOException {
         JSONObject resp = HttpUtils.sendJSONGet("https://www.huobi.com/p/api/activity/pro/yd_time", null, null);
         String currency = resp.getJSONObject("data").getString("currency");
@@ -50,22 +48,14 @@ public class Huobi7day2018 {
      * 交易此币大赚
      */
     private void makeDealOf(String coin) throws IOException {
-        Symbol symbol = new Symbol();
-        symbol.setBaseCurrency(coin);
-        symbol.setQuoteCurrency("btc");
-
-        double coinPrice = CoinUtils.getLastestKline(symbol).getClose();
-
         double btcBalance = apiClient.getBtcBalance();
         long accountId = apiClient.getBtcAccountId();
         if (btcBalance > 0) {
             CreateOrderRequest orderRequest = new CreateOrderRequest();
             orderRequest.setAccountId(String.valueOf(accountId));
             orderRequest.setSymbol(coin + "btc");
-            orderRequest.setType(CreateOrderRequest.OrderType.BUY_LIMIT);
-            orderRequest.setAmount(String.format("%.2f", btcBalance / coinPrice * 0.98));
-//            orderRequest.setPrice(String.format("%.8f",coinPrice * 1.01)); // 线上:加价1% 快速买入
-            orderRequest.setPrice(String.format("%.8f", coinPrice / 100)); // 测试: 除以100，防止交易成功
+            orderRequest.setType(CreateOrderRequest.OrderType.BUY_MARKET);
+            orderRequest.setAmount(String.format("%.2f", btcBalance * 0.98));
             Long orderId = apiClient.createOrder(orderRequest);
 
             if (orderId != null && orderId > 0) {

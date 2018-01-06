@@ -19,7 +19,7 @@ import java.util.Set;
  */
 @ComponentScan("site.binghai.coin.*")
 @SpringBootApplication
-//@EnableScheduling
+@EnableScheduling
 public class CronApp implements InitializingBean{
     @Autowired
     private Huobi7day2018 huobi7day2018;
