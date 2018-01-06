@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @ huobi
  */
-//@Component
+@Component
 public class KlineScannerCron implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(KlineScannerCron.class);
 
@@ -32,10 +32,11 @@ public class KlineScannerCron implements InitializingBean {
     @Autowired
     private KlineService klineService;
 
-    @Scheduled(cron = "0/30 * * * * ?")
+    @Scheduled(cron = "0/20 * * * * ?")
     public void scan() {
         List<Symbol> allSymbols = CoinUtils.allSymbols();
-        allSymbols.stream()
+        long start = System.currentTimeMillis();
+        allSymbols.parallelStream()
                 .filter(v -> !coinFilter.contains(v.getBaseCurrency()))
                 .forEach(v -> {
                     boolean rs = false;
@@ -48,6 +49,7 @@ public class KlineScannerCron implements InitializingBean {
                     }
                 });
         InitAllSymbolKline = false;
+        logger.info("回合结束，耗时：{}ms", System.currentTimeMillis() - start);
     }
 
     /**

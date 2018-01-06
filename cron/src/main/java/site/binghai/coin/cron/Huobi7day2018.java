@@ -22,7 +22,7 @@ import java.io.IOException;
  *
  * @ huobi
  */
-@Component
+//@Component
 public class Huobi7day2018 {
     private final Logger logger = LoggerFactory.getLogger(Huobi7day2018.class);
     @Autowired
@@ -34,12 +34,14 @@ public class Huobi7day2018 {
      * 线上每小时运行一次 @Scheduled(cron = "0 0 * * * ?")
      * 测试每分钟运行一次 @Scheduled(cron = "0 * * * * ?")
      */
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
     public void TimeWaiter() throws IOException {
         JSONObject resp = HttpUtils.sendJSONGet("https://www.huobi.com/p/api/activity/pro/yd_time", null, null);
         String currency = resp.getJSONObject("data").getString("currency");
         if (lastCoin != null && !lastCoin.equals(currency)) {
             makeDealOf(currency);
+        } else {
+            logger.info("未到开始时间");
         }
         lastCoin = currency;
     }
