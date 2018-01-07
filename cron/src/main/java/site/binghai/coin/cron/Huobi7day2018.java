@@ -22,7 +22,7 @@ import java.io.IOException;
  *
  * @ huobi
  */
-@Component
+//@Component
 public class Huobi7day2018 {
     private final Logger logger = LoggerFactory.getLogger(Huobi7day2018.class);
     @Autowired
@@ -53,7 +53,7 @@ public class Huobi7day2018 {
      */
     private void makeDealOf(String coin) throws IOException {
         Symbol symbol = new Symbol(coin, "btc");
-        Long orderId = apiClient.allOnDealOf(symbol);
+        Long orderId = apiClient.allOnDealOf(symbol,0,0);
         if (orderId != null && orderId > 0) {
             logger.warn("创建订单成功! OrderId :{}", orderId);
             apiClient.waitOrderFilled(orderId, new CallBack<HuobiOrder>() {

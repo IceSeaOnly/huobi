@@ -10,6 +10,8 @@ import site.binghai.coin.common.response.Symbol;
 
 import java.util.List;
 
+import static site.binghai.coin.common.entity.KlineTime.MIN1;
+
 /**
  * Created by binghai on 2017/12/31.
  *
@@ -74,6 +76,13 @@ public class CoinUtils {
             return data.getJSONArray("data").toJavaList(Symbol.class);
         }
         return null;
+    }
+
+    public static Long getServerTimestamp(Symbol symbol) {
+        JSONObject data = HttpUtils.sendJSONGet("/market/history/kline",
+                String.format("symbol=%s&period=%s&size=%d", symbol.getBaseCurrency() + symbol.getQuoteCurrency(), MIN1.getTime(), 1), null);
+
+        return data == null ? null : data.getLong("ts");
     }
 
     /**

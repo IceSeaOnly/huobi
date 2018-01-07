@@ -53,9 +53,7 @@ public class ApiClient {
      * ! 慎重操作
      * ! 市价梭哈
      */
-    public Long allOnDealOf(Symbol symbol) throws IOException {
-        double btcBalance = getBtcBalance();
-        long accountId = getBtcAccountId();
+    public Long allOnDealOf(Symbol symbol,double btcBalance,long accountId) throws IOException {
         if (btcBalance > 0) {
             CreateOrderRequest orderRequest = new CreateOrderRequest();
             orderRequest.setAccountId(String.valueOf(accountId));

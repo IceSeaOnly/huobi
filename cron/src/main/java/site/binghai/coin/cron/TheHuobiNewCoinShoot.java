@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import site.binghai.coin.common.client.ApiClient;
 import site.binghai.coin.common.defination.CallBack;
@@ -12,6 +13,7 @@ import site.binghai.coin.common.entity.Kline;
 import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.CoinUtils;
+import site.binghai.coin.common.utils.TimeFormat;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,26 +24,42 @@ import java.util.List;
  *
  * @ huobi
  */
+@Component
 public class TheHuobiNewCoinShoot {
     private final Logger logger = LoggerFactory.getLogger(ApiClient.class);
 
     @Autowired
     private ApiClient apiClient;
+    private static Boolean STOP = Boolean.FALSE; // 仅交易一次，防止反复交易
+    private static final String newCoinName = "swftc"; // 新币名称
+    private static final Long startTimeStamp = 1515391200000L; // 开始时间
+    private static final Double saleRate = 1.8; // 限价涨幅
 
     /**
      * 准备拔枪
      */
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0/1 * * * * ?")
     public void gunShoot() throws IOException {
-        Symbol symbol = new Symbol("powr", "btc");
+        if (STOP) {
+            return;
+        }
 
-        List<Kline> result = null;
+        Symbol symbol = new Symbol(newCoinName, "btc");
+
+        double btcBalance = apiClient.getBtcBalance();
+        long accoutId = apiClient.getBtcAccountId();
+
+        Long ts = 0L;
         do {
-            result = CoinUtils.getKlineList(symbol, KlineTime.MIN1, 1);
-        } while (CollectionUtils.isEmpty(result));
+            logger.info("未开始,账户Id: {}, 已备BTC:{} ,开始时间: {},限价涨幅: {}",
+                    accoutId, btcBalance, TimeFormat.format(startTimeStamp), saleRate);
+            ts = CoinUtils.getServerTimestamp(symbol);
+        } while (ts != null  && ts < startTimeStamp);
+
+        STOP = Boolean.TRUE;
 
         // 已经上线交易
-        Long orderId = apiClient.allOnDealOf(symbol);
+        Long orderId = apiClient.allOnDealOf(symbol, btcBalance, accoutId);
         if (orderId != null) {
             saleWhenReady(orderId);
         } else {
@@ -55,7 +73,7 @@ public class TheHuobiNewCoinShoot {
     private void saleWhenReady(Long orderId) throws IOException {
         apiClient.waitOrderFilled(orderId, order -> {
             try {
-                Long sellOrderId = apiClient.sellOrder(order, 1.5);
+                Long sellOrderId = apiClient.sellOrder(order, saleRate);
                 if (sellOrderId != null) {
                     lookSale(sellOrderId);
                 } else {
@@ -72,11 +90,8 @@ public class TheHuobiNewCoinShoot {
      */
     private void lookSale(Long data) {
         try {
-            apiClient.waitOrderFilled(data, new CallBack<HuobiOrder>() {
-                @Override
-                public void onCallBack(HuobiOrder data) {
-                    logger.info("交易完成,orderId:{}", data);
-                }
+            apiClient.waitOrderFilled(data, order -> {
+                logger.info("交易完成,orderId:{}", order);
             });
         } catch (IOException e) {
             logger.error("卖出交易出现异常,orderId:{}", data);
