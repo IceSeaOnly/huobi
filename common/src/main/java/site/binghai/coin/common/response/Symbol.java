@@ -27,4 +27,11 @@ public class Symbol {
 
     private double rise;//涨幅
 
+    public Symbol() {
+    }
+
+    public Symbol(String baseCurrency, String quoteCurrency) {
+        this.baseCurrency = baseCurrency;
+        this.quoteCurrency = quoteCurrency;
+    }
 }

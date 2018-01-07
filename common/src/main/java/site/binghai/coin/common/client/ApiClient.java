@@ -24,10 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import site.binghai.coin.common.defination.CallBack;
 import site.binghai.coin.common.entity.AccountBalance;
 import site.binghai.coin.common.entity.HuobiOrder;
 import site.binghai.coin.common.request.CreateOrderRequest;
 import site.binghai.coin.common.response.Account;
+import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.HttpUtils;
 import site.binghai.coin.common.utils.JsonUtil;
 
@@ -46,6 +48,90 @@ public class ApiClient {
     static final String API_HOST = "api.huobi.pro";
 
     static final String API_URL = "https://" + API_HOST;
+
+    /**
+     * ! 慎重操作
+     * ! 市价梭哈
+     */
+    public Long allOnDealOf(Symbol symbol) throws IOException {
+        double btcBalance = getBtcBalance();
+        long accountId = getBtcAccountId();
+        if (btcBalance > 0) {
+            CreateOrderRequest orderRequest = new CreateOrderRequest();
+            orderRequest.setAccountId(String.valueOf(accountId));
+            orderRequest.setSymbol(symbol.getBaseCurrency() + symbol.getQuoteCurrency());
+            orderRequest.setType(CreateOrderRequest.OrderType.BUY_MARKET);
+            orderRequest.setAmount(String.format("%.2f", btcBalance * 0.98));
+            Long orderId = createOrder(orderRequest);
+
+            if (orderId != null && orderId > 0) {
+                logger.warn("创建订单成功! CreateOrderRequest:{} ,\n订单Id:{}", orderRequest, orderId);
+                return orderId;
+            } else {
+                logger.error("创建订单失败 ! CreateOrderRequest:{}", orderRequest);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 坐等成交
+     */
+    public void waitOrderFilled(Long orderId, CallBack<HuobiOrder> callBack) throws IOException {
+        int maxErrorRetry = 200;
+        HuobiOrder huobiOrder = null;
+        do {
+            huobiOrder = queryOrder(orderId);
+            if (huobiOrder != null) {
+                logger.info("订单状态:{}", huobiOrder.getState());
+            } else {
+                logger.error("查询出错! orderId: {}", orderId);
+                if (maxErrorRetry-- < 0) {
+                    break;
+                }
+            }
+        } while (huobiOrder == null || !huobiOrder.getState().equals("filled"));
+
+        if (huobiOrder != null && huobiOrder.getType().equals("sell-limit")) {
+            logger.info("交易完成!");
+        } else if (huobiOrder != null) {
+            callBack.onCallBack(huobiOrder);
+        }
+        logger.error("坐等成交出错...");
+    }
+
+    /**
+     * 坐等高价卖出
+     */
+    public Long sellOrder(HuobiOrder order, double rate) throws IOException {
+        if (rate < 1) {
+            rate = 1.1;
+        }
+
+        double salePrice = Double.parseDouble(order.getPrice()) * rate;
+
+        if (salePrice <= 0 || salePrice < Double.parseDouble(order.getPrice())) {
+            logger.error("卖出价格不得低于买入价格!order: {}", order);
+            return null;
+        }
+
+        CreateOrderRequest orderRequest = new CreateOrderRequest();
+        orderRequest.setAccountId(String.valueOf(order.getAccountId()));
+        orderRequest.setSymbol(order.getSymbol());
+        orderRequest.setType(CreateOrderRequest.OrderType.SELL_LIMIT);
+        orderRequest.setPrice(String.valueOf(salePrice));
+        orderRequest.setAmount(order.getAmount());
+        Long orderId = createOrder(orderRequest);
+
+        if (orderId != null && orderId > 0) {
+            logger.warn("卖出订单创建成功! CreateOrderRequest:{} ,\n订单Id:{}", orderRequest, orderId);
+            return orderId;
+        } else {
+            logger.error("卖出订单创建失败 ! CreateOrderRequest:{}", orderRequest);
+        }
+
+        return null;
+    }
 
     public double getBtcBalance() throws IOException {
         double[] rs = {0.0};
