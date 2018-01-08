@@ -18,21 +18,23 @@ import site.binghai.coin.common.utils.TimeFormat;
 import java.io.IOException;
 import java.util.List;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Created by binghai on 2018/1/7.
  * 火币pro 新币快枪手
- *
+ * 玩法有毒，谨慎操作
  * @ huobi
  */
-@Component
+//@Component
 public class TheHuobiNewCoinShoot {
     private final Logger logger = LoggerFactory.getLogger(ApiClient.class);
 
     @Autowired
     private ApiClient apiClient;
     private static Boolean STOP = Boolean.FALSE; // 仅交易一次，防止反复交易
-    private static final String newCoinName = "swftc"; // 新币名称
-    private static final Long startTimeStamp = 1515391200000L; // 开始时间
+    private static final String newCoinName = "gnt"; // 新币名称
+    private static final Long startTimeStamp = 1515405600000L; // 开始时间
     private static final Double saleRate = 1.8; // 限价涨幅
 
     /**
@@ -44,17 +46,24 @@ public class TheHuobiNewCoinShoot {
             return;
         }
 
-        Symbol symbol = new Symbol(newCoinName, "btc");
+        Symbol symbol = new Symbol(newCoinName, "usdt");
 
-        double btcBalance = apiClient.getBtcBalance();
+//        double btcBalance = apiClient.getBtcBalance();
+        double btcBalance = apiClient.getUsdtBalance();
+//        double btcBalance = 9999;
         long accoutId = apiClient.getBtcAccountId();
 
         Long ts = 0L;
         do {
+
             logger.info("未开始,账户Id: {}, 已备BTC:{} ,开始时间: {},限价涨幅: {}",
                     accoutId, btcBalance, TimeFormat.format(startTimeStamp), saleRate);
             ts = CoinUtils.getServerTimestamp(symbol);
-        } while (ts != null  && ts < startTimeStamp);
+        } while (ts != null && ts < startTimeStamp);
+
+        if (ts < startTimeStamp) {
+            return;
+        }
 
         STOP = Boolean.TRUE;
 
@@ -70,14 +79,19 @@ public class TheHuobiNewCoinShoot {
     /**
      * 卖个精光
      */
+    private static Boolean QuickSale = Boolean.TRUE;
+
     private void saleWhenReady(Long orderId) throws IOException {
         apiClient.waitOrderFilled(orderId, order -> {
             try {
-                Long sellOrderId = apiClient.sellOrder(order, saleRate);
-                if (sellOrderId != null) {
-                    lookSale(sellOrderId);
-                } else {
-                    logger.error("创建卖出订单出错,order :{}", order);
+                while (QuickSale) {
+                    Long sellOrderId = apiClient.sellOrder(order, saleRate);
+                    if (sellOrderId != null) { // 创建卖出单成功，退出循环
+                        QuickSale = Boolean.FALSE;
+                        lookSale(sellOrderId);
+                    } else {
+                        logger.error("创建卖出订单出错,order :{}", order);
+                    }
                 }
             } catch (IOException e) {
                 logger.error("创建卖出订单出错,order :{}", order, e);

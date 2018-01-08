@@ -33,6 +33,8 @@ import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.HttpUtils;
 import site.binghai.coin.common.utils.JsonUtil;
 
+import static site.binghai.coin.common.utils.CommonUtils.doubleSubCut;
+
 /**
  * API client.
  *
@@ -53,13 +55,13 @@ public class ApiClient {
      * ! 慎重操作
      * ! 市价梭哈
      */
-    public Long allOnDealOf(Symbol symbol,double btcBalance,long accountId) throws IOException {
+    public Long allOnDealOf(Symbol symbol, double btcBalance, long accountId) throws IOException {
         if (btcBalance > 0) {
             CreateOrderRequest orderRequest = new CreateOrderRequest();
             orderRequest.setAccountId(String.valueOf(accountId));
             orderRequest.setSymbol(symbol.getBaseCurrency() + symbol.getQuoteCurrency());
             orderRequest.setType(CreateOrderRequest.OrderType.BUY_MARKET);
-            orderRequest.setAmount(String.format("%.2f", btcBalance * 0.98));
+            orderRequest.setAmount(doubleSubCut(btcBalance, 4));
             Long orderId = createOrder(orderRequest);
 
             if (orderId != null && orderId > 0) {
@@ -108,7 +110,7 @@ public class ApiClient {
 
         double salePrice = Double.parseDouble(order.getPrice()) * rate;
 
-        if (salePrice <= 0 || salePrice < Double.parseDouble(order.getPrice())) {
+        if (salePrice <= 0 || salePrice <= Double.parseDouble(order.getPrice())) {
             logger.error("卖出价格不得低于买入价格!order: {}", order);
             return null;
         }
@@ -118,7 +120,7 @@ public class ApiClient {
         orderRequest.setSymbol(order.getSymbol());
         orderRequest.setType(CreateOrderRequest.OrderType.SELL_LIMIT);
         orderRequest.setPrice(String.valueOf(salePrice));
-        orderRequest.setAmount(order.getAmount());
+        orderRequest.setAmount(doubleSubCut(Double.parseDouble(order.getAmount()), 6));
         Long orderId = createOrder(orderRequest);
 
         if (orderId != null && orderId > 0) {
@@ -139,6 +141,22 @@ public class ApiClient {
                 AccountBalance balance = accountBlance(account.getId());
                 balance.getList().forEach(cc -> {
                     if (cc.getCurrency().toUpperCase().equals("BTC")) {
+                        rs[0] += cc.getBalance();
+                    }
+                });
+            }
+        });
+        return rs[0];
+    }
+
+    public double getUsdtBalance() throws IOException {
+        double[] rs = {0.0};
+        List<Account> accounts = getAccounts();
+        accounts.forEach(account -> {
+            if (account.getType().equals("spot")) {
+                AccountBalance balance = accountBlance(account.getId());
+                balance.getList().forEach(cc -> {
+                    if (cc.getCurrency().toUpperCase().equals("USDT")) {
                         rs[0] += cc.getBalance();
                     }
                 });
