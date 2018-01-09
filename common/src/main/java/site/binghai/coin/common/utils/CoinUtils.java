@@ -1,6 +1,7 @@
 package site.binghai.coin.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.util.CollectionUtils;
 import site.binghai.coin.common.client.CoreParams;
 import site.binghai.coin.common.entity.Coin;
 import site.binghai.coin.common.entity.HuobiOrder;
@@ -8,7 +9,9 @@ import site.binghai.coin.common.entity.Kline;
 import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.response.Symbol;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static site.binghai.coin.common.entity.KlineTime.MIN1;
 
@@ -70,10 +73,16 @@ public class CoinUtils {
     /**
      * 获取所有交易对
      */
+    private static List<String> coinFilter = Arrays.asList("bt1", "bt2");
+
     public static List<Symbol> allSymbols() {
         JSONObject data = HttpUtils.sendJSONGet("/v1/common/symbols", null, null);
         if (data != null && "ok".equals(data.getString("status"))) {
-            return data.getJSONArray("data").toJavaList(Symbol.class);
+            List<Symbol> list = data.getJSONArray("data").toJavaList(Symbol.class);
+            if (CollectionUtils.isEmpty(list)) {
+                return null;
+            }
+            return list.stream().filter(v -> !coinFilter.contains(v.getBaseCurrency())).collect(Collectors.toList());
         }
         return null;
     }

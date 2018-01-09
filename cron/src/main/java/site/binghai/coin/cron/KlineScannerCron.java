@@ -22,11 +22,10 @@ import java.util.List;
  *
  * @ huobi
  */
-//@Component
+@Component
 public class KlineScannerCron implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(KlineScannerCron.class);
 
-    private static List<String> coinFilter = Arrays.asList("bt1", "bt2");
     private static boolean InitAllSymbolKline = false; // 系统第一次运行时批量拉取2000条历史数据
 
     @Autowired
@@ -37,7 +36,6 @@ public class KlineScannerCron implements InitializingBean {
         List<Symbol> allSymbols = CoinUtils.allSymbols();
         long start = System.currentTimeMillis();
         allSymbols.parallelStream()
-                .filter(v -> !coinFilter.contains(v.getBaseCurrency()))
                 .forEach(v -> {
                     boolean rs = false;
                     while (!rs) {

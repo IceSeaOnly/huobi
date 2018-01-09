@@ -26,6 +26,11 @@ public class TimeFormat {
         return df.format(date);
     }
 
+    public static String format2yyyyMMdd(Long date){
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+        return df.format(date);
+    }
+
     public static Long data2Timestamp(String yyyy_MM_dd){
         SimpleDateFormat format =  new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
