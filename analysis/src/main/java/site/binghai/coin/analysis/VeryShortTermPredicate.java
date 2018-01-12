@@ -1,40 +1,36 @@
 package site.binghai.coin.analysis;
 
-
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import site.binghai.coin.analysis.basic.AbstractAnalysis;
+import site.binghai.coin.analysis.basic.AnalysisMethod;
 import site.binghai.coin.common.entity.Kline;
 import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.JSONPuter;
+import site.binghai.coin.common.utils.TimeFormat;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static site.binghai.coin.common.entity.ConstantWords.*;
 
 /**
- * Created by binghai on 2018/1/8.
- * 分钟级分析机
+ * Created by binghai on 2018/1/9.
+ * 超短线预测
  *
  * @ huobi
  */
-//@Component
-public class MinuteAnalysis extends AbstractAnalysis {
-    @Scheduled(cron = "0 * * * * ?")
-    public void cronAnalysis() {
-        startWork();
-    }
+@Component
+public class VeryShortTermPredicate extends AbstractAnalysis {
 
     @Override
     protected void analysis(List<Kline> list, Symbol symbol, JSONPuter jsonPuter) {
-        List<Double> doubles = list.stream().map(v -> v.getClose()).collect(Collectors.toList());
-        double vc = variance(doubles.get(0), doubles) * 10000;
-
-        jsonPuter.put(sampleNumber, doubles.size())
-                .put(standard, doubles.get(0))
-                .put(variance, (int) vc);
+        Long[] start_end = TimeFormat.getThisMinute(list.get(0).getCreated());
+//        int predicate = list.stream().map(AnalysisMethod::Kline2Predicate).reduce(0, Integer::sum);
+//        jsonPuter.put(resultCode, predicate);
+        jsonPuter.put(success, false);
+        jsonPuter.put(confirmTime, 0);
+        jsonPuter.put(nextStart, start_end[0] + 60000);
+        jsonPuter.put(nextEnd, start_end[1] + 60000);
     }
 
     @Override
@@ -44,7 +40,7 @@ public class MinuteAnalysis extends AbstractAnalysis {
 
     @Override
     protected int getSaveMethod() {
-        return 0;
+        return 1;
     }
 
     @Override

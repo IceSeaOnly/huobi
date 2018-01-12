@@ -20,4 +20,20 @@ public abstract class DeleteAble {
         created = System.currentTimeMillis();
         createdTime = TimeFormat.format(created);
     }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
 }

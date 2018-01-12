@@ -1,5 +1,8 @@
-package site.binghai.coin.analysis;
+package site.binghai.coin.analysis.basic;
 
+
+import site.binghai.coin.common.entity.Kline;
+import site.binghai.coin.common.response.Symbol;
 
 import java.util.List;
 
@@ -18,5 +21,12 @@ public class AnalysisMethod {
         return values.parallelStream()
                 .map(v -> Math.pow(v - base, 2))
                 .reduce(0.0, Double::sum);
+    }
+
+    /**
+     * 单个预测
+     */
+    public static double Kline2Predicate(Kline kline) {
+        return 0;
     }
 }

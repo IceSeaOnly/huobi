@@ -1,6 +1,5 @@
-package site.binghai.coin.analysis;
+package site.binghai.coin.analysis.basic;
 
-import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import site.binghai.coin.common.entity.Kline;
 import site.binghai.coin.common.entity.KlineTime;
+import site.binghai.coin.common.entity.PrediectResult;
 import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.results.AnalysisResult;
 import site.binghai.coin.common.utils.CoinUtils;
@@ -15,6 +15,7 @@ import site.binghai.coin.common.utils.JSONPuter;
 import site.binghai.coin.common.utils.TimeFormat;
 import site.binghai.coin.data.impl.AnalysisResultService;
 import site.binghai.coin.data.impl.KlineService;
+import site.binghai.coin.data.impl.PrediectResultService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,8 @@ public abstract class AbstractAnalysis extends AnalysisMethod implements Initial
     protected KlineService klineService;
     @Autowired
     protected AnalysisResultService analysisResultService;
+    @Autowired
+    protected PrediectResultService prediectResultService;
 
     /**
      * write your logic
@@ -40,6 +43,8 @@ public abstract class AbstractAnalysis extends AnalysisMethod implements Initial
     protected abstract void analysis(List<Kline> list, Symbol symbol, JSONPuter jsonPuter);
 
     protected abstract KlineTime getKlineTime();
+
+    protected abstract int getSaveMethod();
 
     protected abstract void initApp();
 
@@ -67,7 +72,13 @@ public abstract class AbstractAnalysis extends AnalysisMethod implements Initial
             puter.put("batchNumber", getBatchNo());
             puter.put("analysisLevel", klineTime.getTime());
             analysis(list, symbol, puter);
-            insertAnalysisResult(symbol, start, now(), puter);
+            switch (getSaveMethod()) {
+                case 1:
+                    insertPredicateResult(start, now(), puter);
+                    break;
+                default:
+                    insertAnalysisResult(start, now(), puter);
+            }
         }
     }
 
@@ -108,7 +119,15 @@ public abstract class AbstractAnalysis extends AnalysisMethod implements Initial
     /**
      * save results by this method
      */
-    private final void insertAnalysisResult(Symbol symbol, long start, long end, JSONPuter puter) {
+    private final void insertPredicateResult(long start, long end, JSONPuter puter) {
+        puter.put("analysisStart", start);
+        puter.put("analysisEnd", end);
+        puter.put("timeConsuming", end - start);
+        PrediectResult result = puter.asResult().toJavaObject(PrediectResult.class);
+        prediectResultService.save(result);
+    }
+
+    private final void insertAnalysisResult(long start, long end, JSONPuter puter) {
         puter.put("analysisStart", start);
         puter.put("analysisEnd", end);
         puter.put("timeConsuming", end - start);

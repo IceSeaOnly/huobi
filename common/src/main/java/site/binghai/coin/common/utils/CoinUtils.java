@@ -91,7 +91,14 @@ public class CoinUtils {
         JSONObject data = HttpUtils.sendJSONGet("/market/history/kline",
                 String.format("symbol=%s&period=%s&size=%d", symbol.getBaseCurrency() + symbol.getQuoteCurrency(), MIN1.getTime(), 1), null);
 
-        return data == null ? null : data.getLong("ts");
+        if (data == null) {
+            return null;
+        }
+
+        if (data.getJSONArray("data").isEmpty()) {
+            return null;
+        }
+        return data.getJSONArray("data").getJSONObject(0).getLong("close");
     }
 
     /**

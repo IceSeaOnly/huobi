@@ -24,17 +24,18 @@ import static java.lang.Thread.sleep;
  * Created by binghai on 2018/1/7.
  * 火币pro 新币快枪手
  * 玩法有毒，谨慎操作
+ *
  * @ huobi
  */
-//@Component
+@Component
 public class TheHuobiNewCoinShoot {
     private final Logger logger = LoggerFactory.getLogger(ApiClient.class);
 
     @Autowired
     private ApiClient apiClient;
     private static Boolean STOP = Boolean.FALSE; // 仅交易一次，防止反复交易
-    private static final String newCoinName = "gnt"; // 新币名称
-    private static final Long startTimeStamp = 1515405600000L; // 开始时间
+    private static final String newCoinName = "gun"; // 新币名称
+    private static final Long startTimeStamp = 1515578400000L; // 开始时间
     private static final Double saleRate = 1.8; // 限价涨幅
 
     /**
@@ -46,10 +47,10 @@ public class TheHuobiNewCoinShoot {
             return;
         }
 
-        Symbol symbol = new Symbol(newCoinName, "usdt");
+        Symbol symbol = new Symbol(newCoinName, "btc");
 
 //        double btcBalance = apiClient.getBtcBalance();
-        double btcBalance = apiClient.getUsdtBalance();
+        double btcBalance = apiClient.getUsdtBalance() * 0.5;
 //        double btcBalance = 9999;
         long accoutId = apiClient.getBtcAccountId();
 
@@ -59,21 +60,18 @@ public class TheHuobiNewCoinShoot {
             logger.info("未开始,账户Id: {}, 已备BTC:{} ,开始时间: {},限价涨幅: {}",
                     accoutId, btcBalance, TimeFormat.format(startTimeStamp), saleRate);
             ts = CoinUtils.getServerTimestamp(symbol);
-        } while (ts != null && ts < startTimeStamp);
-
-        if (ts < startTimeStamp) {
-            return;
-        }
+        } while (ts != null);
 
         STOP = Boolean.TRUE;
 
-        // 已经上线交易
-        Long orderId = apiClient.allOnDealOf(symbol, btcBalance, accoutId);
-        if (orderId != null) {
-            saleWhenReady(orderId);
-        } else {
-            logger.error("梭哈买入订单失败:{}", symbol);
-        }
+        logger.info("Price:{}", ts);
+//        // 已经上线交易
+//        Long orderId = apiClient.allOnDealOf(symbol, btcBalance, accoutId);
+//        if (orderId != null) {
+//            saleWhenReady(orderId);
+//        } else {
+//            logger.error("梭哈买入订单失败:{}", symbol);
+//        }
     }
 
     /**
