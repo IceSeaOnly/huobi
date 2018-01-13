@@ -1,4 +1,4 @@
-package site.binghai.coin.web.analysis;
+package site.binghai.coin.analysis;
 
 import org.springframework.util.CollectionUtils;
 import site.binghai.coin.common.entity.Kline;
