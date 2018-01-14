@@ -15,6 +15,6 @@ import java.util.List;
 public interface KlineDao extends JpaRepository<Kline, Long> {
     List<Kline> getByIdBetweenAndCoinNameAndQuoteCoinName(long start, long end, String baseName, String quoteName);
     List<Kline> getByCreatedBetweenAndCoinNameAndQuoteCoinName(long start, long end, String baseName, String quoteName);
-    @Query("select * from kline where coin_name=:bcoin and quote_coin_name=:qcoin order by main_id desc limit 1")
+    @Query(value = "select * from kline where coin_name=:bcoin and quote_coin_name=:qcoin order by main_id desc limit 1",nativeQuery = true)
     List<Kline> getLastestKline(@Param("bcoin") String baseName,@Param("qcoin") String quoteName);
 }
