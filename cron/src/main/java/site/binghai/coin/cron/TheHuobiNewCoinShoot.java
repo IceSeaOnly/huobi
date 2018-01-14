@@ -28,15 +28,19 @@ public class TheHuobiNewCoinShoot {
     @Autowired
     private ApiClient apiClient;
     private static Boolean STOP = Boolean.FALSE; // 仅交易一次，防止反复交易
-    private static final String newCoinName = "chat"; // 新币名称
-    private static final Long startTimeStamp = 1515909600000L; // 开始时间
-    private static final Double saleRate = 1.8; // 限价涨幅
+    private static final String newCoinName = "yee"; // 新币名称
+    private static final Long startTimeStamp = 1515913200000L; // 开始时间
+    private static final Double saleRate = 1.5; // 限价涨幅
 
     /**
      * 准备拔枪
      */
     @Scheduled(cron = "0/1 * * * * ?")
     public void gunShoot() throws IOException {
+        if (System.currentTimeMillis() > startTimeStamp) {
+            return;
+        }
+
         if (STOP) {
             return;
         }
@@ -62,7 +66,7 @@ public class TheHuobiNewCoinShoot {
             return;
         }
 //        // 已经上线交易
-        Long orderId = apiClient.allOnDealOf(symbol,lowestPrice, btcBalance, accoutId);
+        Long orderId = apiClient.allOnDealOf(symbol, lowestPrice, btcBalance, accoutId);
         if (orderId != null) {
             saleWhenReady(orderId);
         } else {
