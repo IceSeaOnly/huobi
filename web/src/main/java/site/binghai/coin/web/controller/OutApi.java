@@ -68,7 +68,7 @@ public class OutApi extends BaseController {
         JSONArray arr = new JSONArray();
         rs.forEach(v -> {
             JSONArray item = new JSONArray();
-            item.add(TimeFormat.format(v.getId() * 1000));
+            item.add(TimeFormat.format(v.getCreated()));
             item.add(v.getOpen());
             item.add(v.getClose());
             item.add(v.getLow());

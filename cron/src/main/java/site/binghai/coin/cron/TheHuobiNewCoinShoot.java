@@ -21,7 +21,7 @@ import static java.lang.Thread.sleep;
  *
  * @ huobi
  */
-@Component
+//@Component
 public class TheHuobiNewCoinShoot {
     private final Logger logger = LoggerFactory.getLogger(ApiClient.class);
 
