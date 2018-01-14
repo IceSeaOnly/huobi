@@ -1,6 +1,8 @@
 package site.binghai.coin.data.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import site.binghai.coin.common.entity.Kline;
 
 import java.util.List;
@@ -13,4 +15,6 @@ import java.util.List;
 public interface KlineDao extends JpaRepository<Kline, Long> {
     List<Kline> getByIdBetweenAndCoinNameAndQuoteCoinName(long start, long end, String baseName, String quoteName);
     List<Kline> getByCreatedBetweenAndCoinNameAndQuoteCoinName(long start, long end, String baseName, String quoteName);
+    @Query("select * from kline where coin_name=:bcoin and quote_coin_name=:qcoin order by main_id desc limit 1")
+    List<Kline> getLastestKline(@Param("bcoin") String baseName,@Param("qcoin") String quoteName);
 }

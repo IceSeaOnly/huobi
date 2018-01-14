@@ -2,6 +2,9 @@ package site.binghai.coin.web.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +14,7 @@ import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.CoinUtils;
 import site.binghai.coin.common.utils.TimeFormat;
+import site.binghai.coin.data.impl.KlineService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,21 +32,36 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*")
 public class OutApi extends BaseController {
 
+    private final Logger logger = LoggerFactory.getLogger(OutApi.class);
+
+    @Autowired
+    private KlineService klineService;
+
     @RequestMapping("kline")
     public Object kline(@RequestParam Integer size, @RequestParam String coin, @RequestParam String qcoin, String callback) {
-        List<Kline> rs = CoinUtils.getKlineList(new Symbol(coin, qcoin), KlineTime.MIN1, size);
-        List<Kline> days = CoinUtils.getKlineList(new Symbol(coin, qcoin), KlineTime.DAY, 2);
+        Symbol symbol = new Symbol(coin, qcoin);
+
+        Kline zero = klineService.getZeroPointPrice(symbol);
+        if (zero == null) {
+            logger.error("zero can't be null!");
+            return null;
+        }
+
+        long end = System.currentTimeMillis();
+        long start = System.currentTimeMillis() - size * 60000;
+
+        List<Kline> rs = klineService.getKlineBetween(symbol, start, end);
 
         JSONObject result = new JSONObject();
         JSONObject info = new JSONObject();
         double currentPrice = rs.get(0).getClose();
         info.put("marketPanel_time", TimeFormat.format(rs.get(0).getId() * 1000));
-        if (currentPrice >= days.get(1).getClose()) {
-            info.put("marketPanel_riserate", "+" + String.format("%.2f", (currentPrice / days.get(1).getClose() - 1.0) * 100) + "%");
+        if (currentPrice >= zero.getClose()) {
+            info.put("marketPanel_riserate", "+" + String.format("%.2f", (currentPrice / zero.getClose() - 1.0) * 100) + "%");
             info.put("marketPanel_fallrate", "");
         } else {
             info.put("marketPanel_riserate", "");
-            info.put("marketPanel_fallrate", "-" + String.format("%.2f", (days.get(1).getClose() / currentPrice - 1.0) * 100) + "%");
+            info.put("marketPanel_fallrate", "-" + String.format("%.2f", (zero.getClose() / currentPrice - 1.0) * 100) + "%");
         }
         info.put("marketPanel_cur_price", currentPrice);
 
@@ -98,7 +117,7 @@ public class OutApi extends BaseController {
         double avg = getAvgClose(symbols);
 
         for (Symbol coin : symbols) {
-            List<Kline> ls = CoinUtils.getKlineList(coin, KlineTime.MIN30, size);
+            List<Kline> ls = CoinUtils.getKlineList(coin, KlineTime.MIN15, size);
             double coefficient = avg / ls.get(0).getClose();
 
             if (xaxis.isEmpty()) {
@@ -127,7 +146,7 @@ public class OutApi extends BaseController {
     private double getAvgClose(List<Symbol> symbols) {
         double close = 0.0;
         for (Symbol symbol : symbols) {
-            close += CoinUtils.getLastestKline(symbol).getClose();
+            close += klineService.getLastestKline(symbol).getClose();
         }
         return close / symbols.size();
     }
