@@ -53,15 +53,16 @@ public class ApiClient {
 
     /**
      * ! 慎重操作
-     * ! 市价梭哈
+     * ! 限价梭哈
      */
-    public Long allOnDealOf(Symbol symbol, double btcBalance, long accountId) throws IOException {
+    public Long allOnDealOf(Symbol symbol, double price, double btcBalance, long accountId) throws IOException {
         if (btcBalance > 0) {
             CreateOrderRequest orderRequest = new CreateOrderRequest();
             orderRequest.setAccountId(String.valueOf(accountId));
             orderRequest.setSymbol(symbol.getBaseCurrency() + symbol.getQuoteCurrency());
-            orderRequest.setType(CreateOrderRequest.OrderType.BUY_MARKET);
-            orderRequest.setAmount(doubleSubCut(btcBalance, 4));
+            orderRequest.setType(CreateOrderRequest.OrderType.BUY_LIMIT);
+            orderRequest.setPrice(String.valueOf(price));
+            orderRequest.setAmount(doubleSubCut(btcBalance / price, 2));
             Long orderId = createOrder(orderRequest);
 
             if (orderId != null && orderId > 0) {

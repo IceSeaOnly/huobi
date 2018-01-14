@@ -87,7 +87,10 @@ public class CoinUtils {
         return null;
     }
 
-    public static Long getServerTimestamp(Symbol symbol) {
+    /**
+     * 查询新币最新价格
+     * */
+    public static Double getLastestPrice4NewShoot(Symbol symbol) {
         JSONObject data = HttpUtils.sendJSONGet("/market/history/kline",
                 String.format("symbol=%s&period=%s&size=%d", symbol.getBaseCurrency() + symbol.getQuoteCurrency(), MIN1.getTime(), 1), null);
 
@@ -98,7 +101,7 @@ public class CoinUtils {
         if (data.getJSONArray("data").isEmpty()) {
             return null;
         }
-        return data.getJSONArray("data").getJSONObject(0).getLong("close");
+        return data.getJSONArray("data").getJSONObject(0).getDouble("close");
     }
 
     /**

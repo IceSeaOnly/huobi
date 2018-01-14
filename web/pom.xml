@@ -33,6 +33,9 @@
     <build>
         <plugins>
             <plugin>
+                <configuration>
+                    <finalName>btcWeb</finalName>
+                </configuration>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
