@@ -1,7 +1,7 @@
 package site.binghai.coin.analysisTest;
 
 import org.junit.Test;
-import site.binghai.coin.analysis.basic.AnalysisUtils;
+import site.binghai.coin.common.utils.AnalysisUtils;
 
 import static java.lang.Thread.sleep;
 

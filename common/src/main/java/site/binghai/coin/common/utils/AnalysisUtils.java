@@ -1,11 +1,9 @@
-package site.binghai.coin.analysis.basic;
+package site.binghai.coin.common.utils;
 
 import org.springframework.util.CollectionUtils;
 import site.binghai.coin.common.entity.Kline;
 import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.response.Symbol;
-import site.binghai.coin.common.utils.CoinUtils;
-import site.binghai.coin.common.utils.TimeFormat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -144,5 +142,26 @@ public class AnalysisUtils {
 
     public static float getSimilarityRatio(String str, String target) {
         return 1 - (float) compare(str, target) / Math.max(str.length(), target.length());
+    }
+
+    public static double get2CoinSimilarityRatio(List<Kline> base, List<Kline> cmp) {
+        String baseStr = kline2String(base, false);
+        String cmpStr = kline2String(cmp, false);
+        String pCmpStr = kline2String(cmp, true);
+        double a = getSimilarityRatio(baseStr, cmpStr);
+        double b = getSimilarityRatio(baseStr, pCmpStr) * -1;
+
+        return Math.abs(a) > Math.abs(b) ? a : b;
+    }
+
+    public static String kline2String(List<Kline> list, boolean flip) {
+        String zero = flip ? "1" : "0";
+        String one = flip ? "0" : "1";
+
+        StringBuilder sb = new StringBuilder("1");
+        for (int i = 1; i < list.size(); i++) {
+            sb.append(list.get(i).getClose() >= list.get(i - 1).getClose() ? one : zero);
+        }
+        return sb.toString();
     }
 }

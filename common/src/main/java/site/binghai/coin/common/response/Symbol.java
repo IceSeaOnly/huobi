@@ -34,4 +34,8 @@ public class Symbol {
         this.baseCurrency = baseCurrency;
         this.quoteCurrency = quoteCurrency;
     }
+
+    public String getSimpleName(){
+        return (baseCurrency+"/"+quoteCurrency).toUpperCase();
+    }
 }

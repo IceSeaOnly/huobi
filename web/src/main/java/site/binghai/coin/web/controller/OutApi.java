@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import site.binghai.coin.common.entity.Kline;
 import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.response.Symbol;
+import site.binghai.coin.common.utils.AnalysisUtils;
 import site.binghai.coin.common.utils.CoinUtils;
 import site.binghai.coin.common.utils.TimeFormat;
 
@@ -119,10 +120,32 @@ public class OutApi extends BaseController {
             seriesData.add(0, one);
         }
 
+        result.put("msg", getRelationShip(symbols,KlineTime.MIN15,size));
         result.put("items", coins);
         result.put("xaxis", xaxis);
         result.put("seriesData", seriesData);
         return callback == null ? result : jqueryBack(callback, result);
+    }
+
+    private String getRelationShip(List<Symbol> symbols,KlineTime time,int size) {
+        if (symbols.size() == 1) {
+            return "100%";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        List<Kline> base = CoinUtils.getKlineList(symbols.get(0),time,size);
+        for (int i = 1; i < symbols.size(); i++) {
+            sb.append(symbols.get(0).getSimpleName()+" ~ "+symbols.get(i).getSimpleName());
+            List<Kline> cmp = CoinUtils.getKlineList(symbols.get(i),time,size);
+            if(cmp.size() != base.size()){
+                sb.append(": diff size ,");
+            }else{
+                double ratio = AnalysisUtils.get2CoinSimilarityRatio(base,cmp);
+                sb.append(": "+ratio);
+            }
+        }
+
+        return sb.toString();
     }
 
     /**

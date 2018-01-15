@@ -54,8 +54,10 @@
             <br>
             <div class="row">
                 <div class="col-md-12" id="superRelationPanel">
+                    <div>
+                        <span id="relation_ratio" style="color:#330000;font-size: 20px">loading...</span> &nbsp&nbsp
+                    </div>
                     <ul class="nav nav-pills" id="symbolList">
-
                     </ul>
                     <div id="relationshipPanel" style="width: 100%;height:100%"></div>
                 </div>
@@ -85,6 +87,7 @@
         myChart.showLoading();
         $.getJSON('/open/relationShip?items=' + condition + '&size=' + size + '&callback=?', function (data) {
             drawRelationPanel(data['items'], data['xaxis'], data['seriesData'], myChart);
+            $("#relation_ratio").text(data['msg']);
         });
     }
 
