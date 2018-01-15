@@ -39,36 +39,26 @@ public class OutApi extends BaseController {
 
     @RequestMapping("kline")
     public Object kline(@RequestParam Integer size, @RequestParam String coin, @RequestParam String qcoin, String callback) {
-        Symbol symbol = new Symbol(coin, qcoin);
-
-        Kline zero = klineService.getZeroPointPrice(symbol);
-        if (zero == null) {
-            logger.error("zero can't be null!");
-            return null;
-        }
-
-        long end = System.currentTimeMillis();
-        long start = System.currentTimeMillis() - size * 60000;
-
-        List<Kline> rs = klineService.getKlineBetween(symbol, start, end);
+        List<Kline> rs = CoinUtils.getKlineList(new Symbol(coin, qcoin), KlineTime.MIN1, size);
+        List<Kline> days = CoinUtils.getKlineList(new Symbol(coin, qcoin), KlineTime.DAY, 2);
 
         JSONObject result = new JSONObject();
         JSONObject info = new JSONObject();
         double currentPrice = rs.get(0).getClose();
         info.put("marketPanel_time", TimeFormat.format(rs.get(0).getId() * 1000));
-        if (currentPrice >= zero.getClose()) {
-            info.put("marketPanel_riserate", "+" + String.format("%.2f", (currentPrice / zero.getClose() - 1.0) * 100) + "%");
+        if (currentPrice >= days.get(1).getClose()) {
+            info.put("marketPanel_riserate", "+" + String.format("%.2f", (currentPrice / days.get(1).getClose() - 1.0) * 100) + "%");
             info.put("marketPanel_fallrate", "");
         } else {
             info.put("marketPanel_riserate", "");
-            info.put("marketPanel_fallrate", "-" + String.format("%.2f", (zero.getClose() / currentPrice - 1.0) * 100) + "%");
+            info.put("marketPanel_fallrate", "-" + String.format("%.2f", (days.get(1).getClose() / currentPrice - 1.0) * 100) + "%");
         }
         info.put("marketPanel_cur_price", currentPrice);
 
         JSONArray arr = new JSONArray();
         rs.forEach(v -> {
             JSONArray item = new JSONArray();
-            item.add(TimeFormat.format(v.getCreated()));
+            item.add(TimeFormat.format(v.getId() * 1000));
             item.add(v.getOpen());
             item.add(v.getClose());
             item.add(v.getLow());

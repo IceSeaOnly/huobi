@@ -19,7 +19,7 @@ import static site.binghai.coin.common.entity.ConstantWords.*;
  *
  * @ huobi
  */
-@Component
+//@Component
 public class VeryShortTermPredicate extends AbstractAnalysis {
 
     @Override

@@ -1,6 +1,7 @@
 package site.binghai.coin.analysisTest;
 
 import org.junit.Test;
+import site.binghai.coin.analysis.basic.AnalysisUtils;
 
 import static java.lang.Thread.sleep;
 
@@ -23,5 +24,12 @@ public class simpleTest {
             }
         }
         System.out.println();
+    }
+
+    @Test
+    public void testSameRatio(){
+        String a = "1111001111";
+        String b = "1011101101";
+        System.out.println(AnalysisUtils.getSimilarityRatio(a,b));
     }
 }
