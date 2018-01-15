@@ -14,10 +14,8 @@ import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.CoinUtils;
 import site.binghai.coin.common.utils.TimeFormat;
-import site.binghai.coin.data.impl.KlineService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,9 +31,6 @@ import java.util.stream.Collectors;
 public class OutApi extends BaseController {
 
     private final Logger logger = LoggerFactory.getLogger(OutApi.class);
-
-    @Autowired
-    private KlineService klineService;
 
     @RequestMapping("kline")
     public Object kline(@RequestParam Integer size, @RequestParam String coin, @RequestParam String qcoin, String callback) {
@@ -136,7 +131,7 @@ public class OutApi extends BaseController {
     private double getAvgClose(List<Symbol> symbols) {
         double close = 0.0;
         for (Symbol symbol : symbols) {
-            close += klineService.getLastestKline(symbol).getClose();
+            close += CoinUtils.getLastestKline(symbol).getClose();
         }
         return close / symbols.size();
     }

@@ -14,7 +14,6 @@ import site.binghai.coin.common.utils.CoinUtils;
 import site.binghai.coin.common.utils.JSONPuter;
 import site.binghai.coin.common.utils.TimeFormat;
 import site.binghai.coin.data.impl.AnalysisResultService;
-import site.binghai.coin.data.impl.KlineService;
 import site.binghai.coin.data.impl.PrediectResultService;
 
 import java.util.ArrayList;
@@ -30,8 +29,6 @@ public abstract class AbstractAnalysis extends AnalysisMethod implements Initial
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
     protected KlineTime klineTime;
 
-    @Autowired
-    protected KlineService klineService;
     @Autowired
     protected AnalysisResultService analysisResultService;
     @Autowired
@@ -95,11 +92,6 @@ public abstract class AbstractAnalysis extends AnalysisMethod implements Initial
         return rs == null ? new ArrayList<>() : rs;
     }
 
-    public final List<Kline> getKlines(Symbol symbol, long tsBefore) {
-        long start = System.currentTimeMillis() - new Double(tsBefore * 1.1).intValue();
-        return klineService.getKlineBetween(symbol, start, now());
-    }
-
     protected final void noRecordError(Symbol symbol) {
         logger.error("{} didn't has anything at {} when try to list {} records.",
                 symbol.getBaseCurrency() + symbol.getQuoteCurrency(),
@@ -107,7 +99,7 @@ public abstract class AbstractAnalysis extends AnalysisMethod implements Initial
     }
 
     public final List<Kline> getKlines(Symbol symbol) {
-        return getKlines(symbol, klineTime.getTs());
+        return CoinUtils.getKlineList(symbol, klineTime, 2000);
     }
 
     @Override
