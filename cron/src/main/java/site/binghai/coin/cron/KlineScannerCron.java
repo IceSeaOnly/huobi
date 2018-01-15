@@ -19,10 +19,10 @@ import java.util.List;
 
 /**
  * Created by binghai on 2018/1/1.
- *
+ * 废弃：不再存储数据到本地
  * @ huobi
  */
-@Component
+//@Component
 public class KlineScannerCron implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(KlineScannerCron.class);
 
