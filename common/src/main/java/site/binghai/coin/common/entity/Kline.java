@@ -19,7 +19,7 @@ import javax.persistence.Id;
  * @ huobi
  */
 @Data
-//@Entity
+@Entity
 public class Kline extends DeleteAble{
     @Id
     @GeneratedValue

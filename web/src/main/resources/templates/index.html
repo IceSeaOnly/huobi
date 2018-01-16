@@ -10,352 +10,330 @@
     <meta name="author" content="LayoutIt!">
 
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/css/bootstrap-theme.min.css" rel="stylesheet">
 
-	<script src="http://s3.mogucdn.com/mlcdn/c45406/180113_00kf56jg0ee2faki8d45ghidack5d.js"></script>
-  </head>
-  <body>
+    <script src="http://s3.mogucdn.com/mlcdn/c45406/180113_00kf56jg0ee2faki8d45ghidack5d.js"></script>
+</head>
+<body>
 
-    <div class="container-fluid">
-	<div class="row">
-		<div class="col-md-12">
-			<h3>
-				虚拟货币管理平台
-			</h3>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-2">
-			 
-			<button type="button" class="btn btn-lg btn-block btn-default btn-success">
-				Menu current
-			</button>
-			<button type="button" class="btn btn-lg btn-block btn-default">
-				Menu 2
-			</button>
-			<button type="button" class="btn btn-lg btn-block btn-default">
-				Menu 3
-			</button>
-			<button type="button" class="btn btn-lg btn-block btn-default">
-				Menu groups...
-			</button>
-		</div>
-		<div class="col-md-10">
-			<ul class="nav nav-tabs">
-				<li class="active">
-					<a href="index.html">大盘</a>
-				</li>
-				<li >
-					<a href="relation.html">关系</a>
-				</li>
-				<li >
-					<a href="#">预测</a>
-				</li>
-				<li class="dropdown pull-right">
-					 <a href="#" data-toggle="dropdown" class="dropdown-toggle">子配置<strong class="caret"></strong></a>
-					<ul class="dropdown-menu">
-						<li>
-							<a href="#">配置1</a>
-						</li>
-						<li>
-							<a href="#">配置2</a>
-						</li>
-						<li>
-							<a href="#">配置3</a>
-						</li>
-						<li class="divider">
-						</li>
-						<li>
-							<a href="#">配置4</a>
-						</li>
-					</ul>
-				</li>
-			</ul>
-			<div class="row">
-				<div class="col-md-12" id="superMarketPanel">
-					<div align="right" style="padding-right: 5%">
-						<span id="marketPanel_time" style="color:#330000;font-size: 20px">loading...</span> &nbsp&nbsp
-						<span id="marketPanel_riserate" style="color:#00cc00;font-size: 20px"></span>
-						<span id="marketPanel_fallrate" style="color:#FF0000;font-size: 20px"></span>
-						<span id="marketPanel_cur_price" style="color:#ff6600;font-size: 20px"></span>
-						<div class="btn-group">
-							<button class="btn btn-default" onclick="changeQCoin('btc')" id="qcoinListId">
-								BTC
-							</button> 
-							<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-								<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li>
-									<a onclick="changeQCoin('btc')">BTC</a>
-								</li>
-								<li>
-									<a onclick="changeQCoin('usdt')">USDT</a>
-								</li>
-								<li>
-									<a onclick="changeQCoin('eth')">ETH</a>
-								</li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button class="btn btn-default" onclick="refreshMarketPanel()" id='baseCoinListId'>
-								USDT
-							</button> 
-							<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-								<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" id="baseCoinList">
-								
-							</ul>
-						</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>
+                虚拟货币管理平台
+            </h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
 
-						<div class="btn-group">
-							<button class="btn btn-default" onclick="refreshMarketPanel()">
-								刷新
-							</button> 
-							<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-								<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li>
-									<a >5s自动刷新</a>
-								</li>
-								<li>
-									<a >10s自动刷新</a>
-								</li>
-								<li>
-									<a >20s自动刷新</a>
-								</li>
-								<li >
-									<a >30s自动刷新</a>
-								</li>
-								<li class="divider">
-								</li>
-								<li>
-									<a >停止自动刷新</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-					<div id="marketPanel" style="width: 100%;height:100%"></div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-6">
-					<div class="alert alert-success alert-dismissable">
-						 
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-							×
-						</button>
-						<h4>
-							Alert!
-						</h4> <strong>Warning!</strong> Best check yo self, you're not looking too good. <a href="#" class="alert-link">alert link</a>
-					</div>
-					<div class="btn-group">
-						 
-						<button class="btn btn-default">
-							Action
-						</button> 
-						<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li>
-								<a href="#">Action</a>
-							</li>
-							<li class="disabled">
-								<a href="#">Another action</a>
-							</li>
-							<li class="divider">
-							</li>
-							<li>
-								<a href="#">Something else here</a>
-							</li>
-						</ul>
-					</div>
-					<h3>
-						h3. Lorem ipsum dolor sit amet.
-					</h3>
-				</div>
-				<div class="col-md-6">
-					<div class="alert alert-success alert-dismissable">
-						 
-						<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-							×
-						</button>
-						<h4>
-							Alert!
-						</h4> <strong>Warning!</strong> Best check yo self, you're not looking too good. <a href="#" class="alert-link">alert link</a>
-					</div>
-					<div class="btn-group">
-						 
-						<button class="btn btn-default">
-							Action
-						</button> 
-						<button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu">
-							<li>
-								<a href="#">Action</a>
-							</li>
-							<li class="disabled">
-								<a href="#">Another action</a>
-							</li>
-							<li class="divider">
-							</li>
-							<li>
-								<a href="#">Something else here</a>
-							</li>
-						</ul>
-					</div>
-					<h3>
-						h3. Lorem ipsum dolor sit amet.
-					</h3>
-				</div>
-			</div>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>
-							#
-						</th>
-						<th>
-							Product
-						</th>
-						<th>
-							Payment Taken
-						</th>
-						<th>
-							Status
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							1
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							01/04/2012
-						</td>
-						<td>
-							Default
-						</td>
-					</tr>
-					<tr class="active">
-						<td>
-							1
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							01/04/2012
-						</td>
-						<td>
-							Approved
-						</td>
-					</tr>
-					<tr class="success">
-						<td>
-							2
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							02/04/2012
-						</td>
-						<td>
-							Declined
-						</td>
-					</tr>
-					<tr class="warning">
-						<td>
-							3
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							03/04/2012
-						</td>
-						<td>
-							Pending
-						</td>
-					</tr>
-					<tr class="danger">
-						<td>
-							4
-						</td>
-						<td>
-							TB - Monthly
-						</td>
-						<td>
-							04/04/2012
-						</td>
-						<td>
-							Call in to confirm
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+            <button type="button" class="btn btn-lg btn-block btn-default btn-success">
+                Menu current
+            </button>
+            <button type="button" class="btn btn-lg btn-block btn-default">
+                Menu 2
+            </button>
+            <button type="button" class="btn btn-lg btn-block btn-default">
+                Menu 3
+            </button>
+            <button type="button" class="btn btn-lg btn-block btn-default">
+                Menu groups...
+            </button>
+        </div>
+        <div class="col-md-10">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="index.html">大盘</a>
+                </li>
+                <li>
+                    <a href="relation.html">关系</a>
+                </li>
+                <li>
+                    <a href="#">预测</a>
+                </li>
+                <li class="dropdown pull-right">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">子配置<strong class="caret"></strong></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">配置1</a>
+                        </li>
+                        <li>
+                            <a href="#">配置2</a>
+                        </li>
+                        <li>
+                            <a href="#">配置3</a>
+                        </li>
+                        <li class="divider">
+                        </li>
+                        <li>
+                            <a href="#">配置4</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-md-12" id="superMarketPanel">
+                    <div align="right" style="padding-right: 5%">
+                        <span id="marketPanel_time" style="color:#330000;font-size: 20px">loading...</span> &nbsp&nbsp
+                        <span id="marketPanel_riserate" style="color:#00cc00;font-size: 20px"></span>
+                        <span id="marketPanel_fallrate" style="color:#FF0000;font-size: 20px"></span>
+                        <span id="marketPanel_cur_price" style="color:#ff6600;font-size: 20px"></span>
+                        <div class="btn-group">
+                            <button class="btn btn-default" onclick="changeQCoin('btc')" id="qcoinListId">
+                                BTC
+                            </button>
+                            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a onclick="changeQCoin('btc')">BTC</a>
+                                </li>
+                                <li>
+                                    <a onclick="changeQCoin('usdt')">USDT</a>
+                                </li>
+                                <li>
+                                    <a onclick="changeQCoin('eth')">ETH</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-default" onclick="refreshMarketPanel()" id='baseCoinListId'>
+                                USDT
+                            </button>
+                            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="baseCoinList">
+
+                            </ul>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-default" onclick="refreshMarketPanel()">
+                                刷新
+                            </button>
+                            <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a>5s自动刷新</a>
+                                </li>
+                                <li>
+                                    <a>10s自动刷新</a>
+                                </li>
+                                <li>
+                                    <a>20s自动刷新</a>
+                                </li>
+                                <li>
+                                    <a>30s自动刷新</a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a>停止自动刷新</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="marketPanel" style="width: 100%;height:100%"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="lineChartPanelContainer">
+                    <div class="alert alert-success alert-dismissable" style="display: none">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                            ×
+                        </button>
+                        <h4>
+                            Alert!
+                        </h4> <strong>Warning!</strong> Best check yo self, you're not looking too good. <a href="#"
+                                                                                                            class="alert-link">alert
+                        link</a>
+                    </div>
+
+                    <button class="btn btn-default" onclick="autoRefreshLineChart()">
+                        自动刷新
+                    </button>
+                    <div id="lineChartPanel"></div>
+                    <h3>
+                        推论分析
+                    </h3>
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        #
+                    </th>
+                    <th>
+                        Product
+                    </th>
+                    <th>
+                        Payment Taken
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        01/04/2012
+                    </td>
+                    <td>
+                        Default
+                    </td>
+                </tr>
+                <tr class="active">
+                    <td>
+                        1
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        01/04/2012
+                    </td>
+                    <td>
+                        Approved
+                    </td>
+                </tr>
+                <tr class="success">
+                    <td>
+                        2
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        02/04/2012
+                    </td>
+                    <td>
+                        Declined
+                    </td>
+                </tr>
+                <tr class="warning">
+                    <td>
+                        3
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        03/04/2012
+                    </td>
+                    <td>
+                        Pending
+                    </td>
+                </tr>
+                <tr class="danger">
+                    <td>
+                        4
+                    </td>
+                    <td>
+                        TB - Monthly
+                    </td>
+                    <td>
+                        04/04/2012
+                    </td>
+                    <td>
+                        Call in to confirm
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script type="text/x-jsrender" id="baseCoinRender_tpl">
         <li><a onclick="changeBaseCoin('{{:baseCoin}}')">{{:coin}}</a></li>
+
 </script>
-    <script src="/js/jquery.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/scripts.js"></script>
-    <script src="https://wx.nanayun.cn/api?act=772e3742bb15fda" type="text/javascript"></script>
-    <!-- jsrender -->
-    <script src="http://s3.mogucdn.com/mlcdn/c45406/180113_432eh69k46e1081889g0b2147k503.js" type="text/javascript"></script>
-    <!-- 大盘 -->
-    <script src="https://wx.nanayun.cn/api?act=4a36a15dd8c1b78" type="text/javascript"></script>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/scripts.js"></script>
+<script src="https://wx.nanayun.cn/api?act=772e3742bb15fda" type="text/javascript"></script>
+<!-- jsrender -->
+<script src="http://s3.mogucdn.com/mlcdn/c45406/180113_432eh69k46e1081889g0b2147k503.js"
+        type="text/javascript"></script>
+<!-- 大盘 -->
+<script src="https://wx.nanayun.cn/api?act=4a36a15dd8c1b78" type="text/javascript"></script>
+<!-- 柱形图 -->
+<script src="https://wx.nanayun.cn/api?act=e2e9f0103770a63" type="text/javascript"></script>
 
-    <script type="text/javascript">
-    	function refreshMarketPanel() {
-    		resizeChartContainer('marketPanel','superMarketPanel');
-			myChart = echarts.init(document.getElementById('marketPanel'));
-			myChart.showLoading();
-			$.getJSON('http://btc.nanayun.cn/open/kline?coin='+baseCoin+'&qcoin='+qcoin+'&size=1000&callback=?', function(data){
-				$("#marketPanel_time").text(data['info']['marketPanel_time']);
-				$("#marketPanel_riserate").text(data['info']['marketPanel_riserate']);
-				$("#marketPanel_fallrate").text(data['info']['marketPanel_fallrate']);
-				$("#marketPanel_cur_price").text(data['info']['marketPanel_cur_price']);
-				drawMarketPanel(data['list'],myChart);
-			});
-    	}
+<script type="text/javascript">
+    function refreshMarketPanel() {
+        resizeChartContainer('marketPanel', 'superMarketPanel');
+        myChart = echarts.init(document.getElementById('marketPanel'));
+        myChart.showLoading();
+//        $.getJSON('/open/kline?coin=' + baseCoin + '&qcoin=' + qcoin + '&size=1000&callback=?', function (data) {
+        $.getJSON('/open/kline?coin=btc&qcoin=usdt&size=1000&callback=?', function (data) {
+            $("#marketPanel_time").text(data['info']['marketPanel_time']);
+            $("#marketPanel_riserate").text(data['info']['marketPanel_riserate']);
+            $("#marketPanel_fallrate").text(data['info']['marketPanel_fallrate']);
+            $("#marketPanel_cur_price").text(data['info']['marketPanel_cur_price']);
+            drawMarketPanel(data['list'], myChart);
+        });
+        refreshLineChartPanel(true);
+    }
 
-    	function changeQCoin(coinName){
-    		qcoin = coinName;
-    		$("#qcoinListId").text(coinName.toUpperCase());
-    		$.getJSON("http://btc.nanayun.cn/open/symbols?qcoin="+coinName,function(data){
-					var template = $.templates("#baseCoinRender_tpl");
-                    var html = template.render(data);
-                    $("#baseCoinList").append(html);
-                    changeBaseCoin(data[0]['baseCoin']);
-    		})
-    	}
+    function changeQCoin(coinName) {
+        qcoin = coinName;
+        $("#qcoinListId").text(coinName.toUpperCase());
+        $.getJSON("/open/symbols?qcoin=" + coinName, function (data) {
+            var template = $.templates("#baseCoinRender_tpl");
+            var html = template.render(data);
+            $("#baseCoinList").append(html);
+            changeBaseCoin(data[0]['baseCoin']);
+        })
+    }
 
-    	function changeBaseCoin(coinName){
-    		$("#baseCoinListId").text(coinName.toUpperCase());
-    		baseCoin = coinName;
-    		refreshMarketPanel();
-    	}
-    </script>
-    <!-- 初始化 -->
-    <script type="text/javascript">
-    	var qcoin = 'usdt';
-    	var baseCoin = 'btc';
-    	refreshMarketPanel();
-    </script>
-  </body>
+    function changeBaseCoin(coinName) {
+        $("#baseCoinListId").text(coinName.toUpperCase());
+        baseCoin = coinName;
+        refreshMarketPanel();
+    }
+
+    var autoRefreshLineChartSwitcher = false;
+    var autoRefreshLineChartHolder = null;
+    function autoRefreshLineChart() {
+        if (!autoRefreshLineChartSwitcher) {
+            autoRefreshLineChartHolder = setInterval(function () {
+                refreshLineChartPanel(false);
+            }, 5000);
+        } else {
+            clearInterval(autoRefreshLineChartHolder);
+        }
+        autoRefreshLineChartSwitcher = !autoRefreshLineChartSwitcher;
+    }
+
+    function refreshLineChartPanel(first) {
+        resizeChartContainer('lineChartPanel', 'lineChartPanelContainer');
+        lineChart = echarts.init(document.getElementById('lineChartPanel'));
+        if(first){
+            lineChart.showLoading();
+        }
+        $.getJSON('/open/waveInterval?baseCurrency=' + baseCoin + '&quoteCurrency=' + qcoin + '&size=2000&callback?', function (data) {
+            drawLinePanel(lineChart, data['dataAxis'], data['data'], data['yMax'], data['msg'], data['dataShadow']);
+        })
+    }
+</script>
+<!-- 初始化 -->
+<script type="text/javascript">
+    var qcoin = 'usdt';
+    var baseCoin = 'btc';
+    refreshMarketPanel();
+</script>
+</body>
 </html>
