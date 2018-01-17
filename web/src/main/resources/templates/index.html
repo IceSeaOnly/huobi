@@ -263,12 +263,14 @@
 <script src="/js/jquery.min.js"></script>
 <script src="/js/bootstrap.min.js"></script>
 <script src="/js/scripts.js"></script>
+
+<!-- resize -->
 <script src="https://wx.nanayun.cn/api?act=772e3742bb15fda" type="text/javascript"></script>
 <!-- jsrender -->
 <script src="http://s3.mogucdn.com/mlcdn/c45406/180113_432eh69k46e1081889g0b2147k503.js"
         type="text/javascript"></script>
 <!-- 大盘 -->
-<script src="https://wx.nanayun.cn/api?act=4a36a15dd8c1b78" type="text/javascript"></script>
+<!--<script src="https://wx.nanayun.cn/api?act=4a36a15dd8c1b78" type="text/javascript"></script>-->
 <!-- 柱形图 -->
 <script src="https://wx.nanayun.cn/api?act=e2e9f0103770a63" type="text/javascript"></script>
 
@@ -277,8 +279,7 @@
         resizeChartContainer('marketPanel', 'superMarketPanel');
         myChart = echarts.init(document.getElementById('marketPanel'));
         myChart.showLoading();
-//        $.getJSON('/open/kline?coin=' + baseCoin + '&qcoin=' + qcoin + '&size=1000&callback=?', function (data) {
-        $.getJSON('/open/kline?coin=btc&qcoin=usdt&size=1000&callback=?', function (data) {
+        $.getJSON('/open/kline?coin=' + baseCoin + '&qcoin=' + qcoin + '&size=1000&callback=?', function (data) {
             $("#marketPanel_time").text(data['info']['marketPanel_time']);
             $("#marketPanel_riserate").text(data['info']['marketPanel_riserate']);
             $("#marketPanel_fallrate").text(data['info']['marketPanel_fallrate']);
@@ -324,7 +325,7 @@
         if(first){
             lineChart.showLoading();
         }
-        $.getJSON('/open/waveInterval?baseCurrency=' + baseCoin + '&quoteCurrency=' + qcoin + '&size=2000&callback?', function (data) {
+        $.getJSON('/open/waveInterval?baseCurrency=btc&quoteCurrency=usdt&size=2000&callback?', function (data) {
             drawLinePanel(lineChart, data['dataAxis'], data['data'], data['yMax'], data['msg'], data['dataShadow']);
         })
     }

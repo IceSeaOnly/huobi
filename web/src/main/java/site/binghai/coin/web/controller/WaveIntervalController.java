@@ -40,11 +40,14 @@ public class WaveIntervalController extends BaseController {
         int yMax = prices.get(prices.size() - 1).intValue();
 
         TreeMap<Integer, Integer> maps = new TreeMap<>();
+        int[] maxShadow = {1};
 
         prices.forEach(v -> {
             int p = (int) (v / 100);
             if (maps.containsKey(p)) {
-                maps.put(p, maps.get(p) + 1);
+                int newV = maps.get(p) + 1;
+                maxShadow[0] = Math.max(maxShadow[0], newV);
+                maps.put(p, newV);
             } else {
                 maps.put(p, 1);
             }
@@ -56,16 +59,10 @@ public class WaveIntervalController extends BaseController {
 
         int current = (int) (CoinUtils.getLastestKline(symbol).getClose() / 100);
 
-        JSONObject cur = new JSONObject();
-        JSONObject color = new JSONObject();
-        color.put("color", "#ff0000");
-        cur.put("value", maps.get(current));
-        cur.put("itemStyle", color);
-
         maps.forEach((k, v) -> {
             dataAxis.add(k);
-            data.add(k == current ? cur : v);
-            dataShadow.add(0);
+            data.add(v);
+            dataShadow.add(k == current ? maxShadow[0] : 0);
         });
 
         JSONObject resp = new JSONObject();
