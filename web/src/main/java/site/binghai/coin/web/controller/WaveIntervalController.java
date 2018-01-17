@@ -61,7 +61,7 @@ public class WaveIntervalController extends BaseController {
         maps.forEach((k, v) -> {
             dataAxis.add(k);
             data.add(v);
-            dataShadow.add(k == current ? (int) (v * 1.1) : 0);
+            dataShadow.add(k == current ? (int) (v * 1.3) : 0);
         });
 
         JSONObject resp = new JSONObject();
