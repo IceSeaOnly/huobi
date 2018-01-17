@@ -327,7 +327,7 @@
             lineChart.showLoading();
         }
         $.getJSON('/open/waveInterval?baseCurrency=btc&quoteCurrency=usdt&size=2000&callback?', function (data) {
-            drawLinePanel(lineChart, data['dataAxis'], data['data'], data['yMax'], data['msg'], data['dataShadow']);
+            drawLinePanel(lineChart, data['dataAxis'], data['data'], data['yMax'], data['msg'],data['shadowMsg'], data['dataShadow']);
         })
     }
 </script>
