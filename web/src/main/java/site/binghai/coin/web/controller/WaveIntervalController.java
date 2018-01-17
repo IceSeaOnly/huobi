@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 @RestController
 @CrossOrigin(origins = "*")
 public class WaveIntervalController extends BaseController {
+    private static List<String> last5Waves = new ArrayList<>();
+
     @RequestMapping("waveInterval")
     public Object waveInterval(Symbol symbol, @RequestParam int size) {
         if (symbol == null) {
@@ -57,11 +59,19 @@ public class WaveIntervalController extends BaseController {
 
         double curDf = CoinUtils.getLastestKline(symbol).getClose();
         int current = (int) (curDf / 100);
+        last5Waves.add(String.format("$%.2f  ", curDf));
+        if (last5Waves.size() > 5) {
+            last5Waves.remove(0);
+        }
+        StringBuilder shadowMsg = new StringBuilder();
+        for (String v : last5Waves){
+            shadowMsg.append(v);
+        }
 
         maps.forEach((k, v) -> {
             dataAxis.add(k);
-            data.add(v);
-            dataShadow.add(k == current ? (int) (v * 1.3) : 0);
+            data.add(k == current ? 0 : v);
+            dataShadow.add(k == current ? v : 0);
         });
 
         JSONObject resp = new JSONObject();
@@ -70,7 +80,8 @@ public class WaveIntervalController extends BaseController {
         resp.put("dataAxis", dataAxis);
         resp.put("data", data);
         resp.put("dataShadow", dataShadow);
-        resp.put("msg", String.format("from %s to %s @ $%.2f", endTime, startTime, curDf));
+        resp.put("shadowMsg", shadowMsg.toString());
+        resp.put("msg", String.format("from %s to %s @ 【 $%.2f 】", endTime, startTime, curDf));
 
         return resp;
     }
