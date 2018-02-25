@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import site.binghai.coin.common.client.ApiClient;
+import site.binghai.coin.common.utils.SmsNoticeService;
+import site.binghai.coin.common.utils.TimeFormat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -22,4 +24,9 @@ public class HuobiApplicationTests {
 	public void testListOrder(){
 		System.out.println(apiClient.listOrder("usdt"));
 	}
+
+
+	@Autowired
+	private SmsNoticeService smsNoticeService;
+
 }

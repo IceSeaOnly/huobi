@@ -47,7 +47,7 @@ public class RefreshHistoryOrders implements ApplicationListener<ContextRefreshe
             all.addAll(tmp);
         }
 
-        apiClient.listOrder("btc");
+        tmp = apiClient.listOrder("btc");
         if (!CollectionUtils.isEmpty(tmp)) {
             all.addAll(tmp);
         }

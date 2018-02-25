@@ -56,18 +56,22 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
         fcs.stream().limit(10).forEach(v -> {
             JSONObject block = new JSONObject();
             JSONArray arr = new JSONArray();
-            arr.add(String.valueOf(v.getSymbol().getBaseCurrency()+"/"+v.getSymbol().getQuoteCurrency()).toUpperCase());
+            arr.add(String.valueOf(v.getSymbol().getBaseCurrency() + "/" + v.getSymbol().getQuoteCurrency()).toUpperCase());
             arr.add(removeZero(v.getFc()));
             arr.add(removeZero(v.getMax()));
             arr.add(removeZero(v.getMin()));
             arr.add(removeZero(v.getAvg()));
-            arr.add(removeZero((v.getMax() / v.getAvg()) * 100 - 100)+ "%");
+            arr.add(removeZero(v.getAvg() / 1.015));
+            double cur = CoinUtils.getLastestKline(v.getSymbol()).getClose();
+            arr.add(cur);
+            arr.add(cur - v.getAvg() / 1.015);
+            arr.add(removeZero((v.getAvg() / v.getMin()) * 100 - 100) + "%");
 
-            block.put("blocks",arr);
+            block.put("blocks", arr);
             array.add(block);
         });
 
-        memberCacheService.put(MemberCacheService.CacheKeys.FLOAT_TOP_10,array);
+        memberCacheService.put(MemberCacheService.CacheKeys.FLOAT_TOP_10, array);
     }
 
     /**
