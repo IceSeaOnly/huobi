@@ -18,6 +18,15 @@ public class CommonUtils {
         return 0;
     }
 
+    public static int cmpLong2int(long v){
+        if (v > 0) {
+            return 1;
+        } else if (v < 0) {
+            return -1;
+        }
+        return 0;
+    }
+
     /**
      * double类型截断成String
      *
@@ -42,5 +51,26 @@ public class CommonUtils {
             return v;
         }
         return v.substring(0, index + accuracy + 1);
+    }
+
+    /**
+     * 去除字符串上多余的0
+     * */
+    public static String removeZero(Object obj) {
+        String str = obj.toString();
+        if (str == null || str.length() == 0) {
+            return "";
+        }
+        if (!str.endsWith("0")) {
+            return str;
+        }
+
+        int idx = str.length() - 1;
+        for (; idx > 0; idx--) {
+            if (str.charAt(idx) != '0' || str.charAt(idx) == '.') {
+                break;
+            }
+        }
+        return str.substring(0, idx);
     }
 }

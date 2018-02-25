@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +25,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import site.binghai.coin.common.defination.CallBack;
 import site.binghai.coin.common.entity.AccountBalance;
 import site.binghai.coin.common.entity.HuobiOrder;
 import site.binghai.coin.common.request.CreateOrderRequest;
 import site.binghai.coin.common.response.Account;
 import site.binghai.coin.common.response.Symbol;
+import site.binghai.coin.common.utils.CoinUtils;
 import site.binghai.coin.common.utils.HttpUtils;
 import site.binghai.coin.common.utils.JsonUtil;
+import site.binghai.coin.common.utils.TimeFormat;
 
 import static site.binghai.coin.common.utils.CommonUtils.doubleSubCut;
 
@@ -185,6 +189,37 @@ public class ApiClient {
     private enum HttpType {
         GET,
         POST,;
+    }
+
+    /**
+     * 所有订单
+     */
+    public List<HuobiOrder> listOrder(String filterCoin) {
+        List<HuobiOrder> list = new ArrayList<>();
+
+        List<Symbol> symbols = CoinUtils.allSymbols();
+        symbols.stream()
+                .filter(v -> v.getQuoteCurrency().equals(filterCoin))
+                .forEach(v -> {
+                    HashMap params = new HashMap<>();
+                    params.put("start-date","2017-08-29");
+                    params.put("end-date", TimeFormat.format2yyyy_MM_dd(System.currentTimeMillis()));
+                    params.put("symbol", v.getBaseCurrency() + v.getQuoteCurrency());
+                    params.put("states", "pre-submitted,submitted,partial-filled,filled,canceled");
+                    JSONObject data = jsonGet("/v1/order/orders/", params);
+                    if (data != null && "ok".equals(data.getString("status"))) {
+//                        logger.info(v.getBaseCurrency() + v.getQuoteCurrency() + " data set : {}", data.getJSONArray("data").size());
+                        JSONArray array = data.getJSONArray("data");
+                        List<HuobiOrder> ls = array.toJavaList(HuobiOrder.class);
+                        if (!CollectionUtils.isEmpty(ls)) {
+                            list.addAll(ls);
+                        }
+                    } else {
+                        logger.error("listOrder Error : {}", data);
+                    }
+                });
+
+        return list;
     }
 
     /**

@@ -15,7 +15,7 @@ import java.net.URLConnection;
 import java.util.Arrays;
 
 public class HttpUtils {
-    private static final String server = "https://api.huobipro.com";
+    private static final String server = "https://api.huobi.pro";
 
     /**
      * 向指定URL发送GET方法的请求

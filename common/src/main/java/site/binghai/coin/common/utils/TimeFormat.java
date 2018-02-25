@@ -18,8 +18,12 @@ public class TimeFormat {
     }
 
     public static String format(Long date) {
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return df.format(date);
+        try {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return df.format(date);
+        }catch (Exception e){e.printStackTrace();}
+
+        return "NULL";
     }
 
     public static String format2yyyy_MM_dd(Long date) {

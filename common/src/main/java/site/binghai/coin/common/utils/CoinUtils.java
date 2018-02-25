@@ -89,7 +89,7 @@ public class CoinUtils {
 
     /**
      * 查询新币最新价格
-     * */
+     */
     public static Double getLastestPrice4NewShoot(Symbol symbol) {
         JSONObject data = HttpUtils.sendJSONGet("/market/history/kline",
                 String.format("symbol=%s&period=%s&size=%d", symbol.getBaseCurrency() + symbol.getQuoteCurrency(), MIN1.getTime(), 1), null);
@@ -125,6 +125,25 @@ public class CoinUtils {
             return kline;
         }
         return null;
+    }
+
+    /**
+     * [挂单,吃单] 费率
+     */
+    public static double[] getFee(Symbol symbol) {
+        if (symbol == null) {
+            return new double[]{1, 1};
+        }
+
+        JSONObject data = HttpUtils.sendJSONGet("/v1/settings/fee", "symbols=" + symbol.getBaseCurrency() + symbol.getQuoteCurrency(), null);
+        if (data != null && "ok".equals(data.getString("status"))) {
+            double maker = data.getJSONObject("data").getDouble("maker-fee");
+            double taker = data.getJSONObject("data").getDouble("taker-fee");
+
+            return new double[]{maker, taker};
+        }
+
+        return new double[]{1, 1};
     }
 
     private static double[] parseDoubles(String ori) {

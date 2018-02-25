@@ -29,6 +29,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>site.binghai.coin</groupId>
+            <artifactId>cron</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- 放宽thymeleaf对html的检查-->
         <!-- https://mvnrepository.com/artifact/net.sourceforge.nekohtml/nekohtml -->
         <dependency>

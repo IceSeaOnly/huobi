@@ -2,6 +2,7 @@ package site.binghai.coin.common.response;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Created by binghai on 2017/12/19.
@@ -13,6 +14,7 @@ import lombok.Data;
  * @ huobi
  */
 @Data
+@ToString
 public class Symbol {
     @JSONField(name = "base-currency")
     private String baseCurrency;
