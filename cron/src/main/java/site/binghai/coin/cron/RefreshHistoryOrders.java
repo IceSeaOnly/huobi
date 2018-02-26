@@ -7,6 +7,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -27,6 +28,7 @@ import static site.binghai.coin.common.utils.CommonUtils.removeZero;
  * @ huobi
  */
 @Component
+@EnableScheduling
 public class RefreshHistoryOrders implements ApplicationListener<ContextRefreshedEvent> {
     private final Logger logger = LoggerFactory.getLogger(RefreshHistoryOrders.class);
 
