@@ -64,6 +64,5 @@
 		<module>web</module>
 		<module>data</module>
 		<module>cron</module>
-		<module>analysis</module>
 	</modules>
 </project>
