@@ -97,14 +97,15 @@
         <div class="content">
             <div class="container">
                 <!-- 主体内容 begin -->
-                
+
                 <div class="row">
+                    <h1>未完成订单</h1>
                     <table id="datatable" class="table table-striped table-bordered">
                         <thead>
                         <tr>
                             <th>订单ID</th>
                             <th>交易对</th>
-                            <th>订单类型	</th>
+                            <th>订单类型</th>
                             <th>账户ID</th>
                             <th>订单数量</th>
                             <th>订单撤销时间</th>
@@ -120,6 +121,33 @@
 
 
                         <tbody id="scanBody">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <h1>已完成订单</h1>
+                    <table id="datatableOver" class="table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>订单ID</th>
+                            <th>交易对</th>
+                            <th>订单类型</th>
+                            <th>账户ID</th>
+                            <th>订单数量</th>
+                            <th>订单撤销时间</th>
+                            <th>订单创建时间</th>
+                            <th>已成交数量</th>
+                            <th>已成交总金额</th>
+                            <th>已成交手续费</th>
+                            <th>最后成交时间</th>
+                            <th>订单价格</th>
+                            <th>订单状态</th>
+                        </tr>
+                        </thead>
+
+
+                        <tbody id="scanBodyOver">
 
                         </tbody>
                     </table>
@@ -196,6 +224,7 @@
         <td>{{:state}}</td>
     </tr>
 
+
 </script>
 <script th:inline="javascript">
     jQuery(document).ready(function ($) {
@@ -203,28 +232,32 @@
         setInterval(lastScan, 20000);
     });
 
-    var lastHtml = '';
-
     function lastScan() {
-        $.getJSON('/admin/orderList', function (data) {
+        runner(0,"datatable","scanBody");
+        runner(1,"datatableOver","scanBodyOver");
+    }
+
+    function runner(listType, tableId, scanId) {
+        $.getJSON('/admin/orderList?listType=' + listType, function (data) {
             if (data['result']) {
                 var template = $.templates("#kqRecords");
                 var html = template.render(data['data']);
+                var lastHtml = $("#"+tableId).html();
 
                 if (lastHtml != html) {
                     lastHtml = html;
-                    $('#datatable').dataTable().fnDestroy();
-                    $("#scanBody").html(lastHtml);
-                    $('#datatable').dataTable({
-                        "order": [[ 6, "desc" ]]
+                    $('#' + tableId).dataTable().fnDestroy();
+                    $("#" + scanId).html(lastHtml);
+                    $('#' + tableId).dataTable({
+                        "order": [[6, "desc"]]
                     });
 
-                    console.log("refresh");
+                    console.log(tableId + " refresh");
                 }
             } else {
-                $('#datatable').dataTable().fnDestroy();
-                $("#scanBody").html('');
-                $('#datatable').dataTable();
+                $('#' + tableId).dataTable().fnDestroy();
+                $("#" + scanId).html('');
+                $('#' + tableId).dataTable();
             }
         })
     }
