@@ -94,7 +94,7 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
 //        logger.info("high:{},{}", high.size(),high);
 //        logger.info("low:{},{}", low.size(),low);
 
-        fcItem.setFc(MathUtils.variance(avg, high) + MathUtils.variance(avg, low));
+        fcItem.setFc((variance(avg, high) + variance(avg, low))/2);
         fcItem.setMax(high.get(high.size() - 1));
         fcItem.setMin(low.get(0));
         fcItem.setSymbol(symbol);
@@ -102,6 +102,12 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
 
 //        logger.info("{}:{}",symbol,fcItem);
         fc.add(fcItem);
+    }
+
+    public static double variance(double base, List<Double> values) {
+        return values.parallelStream()
+                .map(v -> Math.pow(v/base, 2))
+                .reduce(0.0, Double::sum);
     }
 
     @Override
