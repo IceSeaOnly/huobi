@@ -1,5 +1,7 @@
 package site.binghai.coin.common.utils;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 /**
  * Created by binghai on 2017/12/31.
  *
@@ -18,7 +20,7 @@ public class CommonUtils {
         return 0;
     }
 
-    public static int cmpLong2int(long v){
+    public static int cmpLong2int(long v) {
         if (v > 0) {
             return 1;
         } else if (v < 0) {
@@ -55,7 +57,7 @@ public class CommonUtils {
 
     /**
      * 去除字符串上多余的0
-     * */
+     */
     public static String removeZero(Object obj) {
         String str = obj.toString();
         if (str == null || str.length() == 0) {
@@ -65,12 +67,20 @@ public class CommonUtils {
             return str;
         }
 
-        int idx = str.length() - 1;
+        int idx = str.length();
         for (; idx > 0; idx--) {
-            if (str.charAt(idx) != '0' || str.charAt(idx) == '.') {
+            if (str.charAt(idx - 1) != '0' || str.charAt(idx - 1) == '.') {
                 break;
             }
         }
-        return str.substring(0, idx);
+        String v = str.substring(0, idx);
+
+        v = v.endsWith(".") ? v.substring(0, v.length() - 1) : v;
+
+        if (v.contains(".") && v.length() - v.indexOf(".") > 7) {
+            return v.substring(0, v.indexOf(".") + 7);
+        }
+
+        return v;
     }
 }
