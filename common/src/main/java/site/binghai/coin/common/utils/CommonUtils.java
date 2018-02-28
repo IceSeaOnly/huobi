@@ -63,24 +63,21 @@ public class CommonUtils {
         if (str == null || str.length() == 0) {
             return "";
         }
-        if (!str.endsWith("0")) {
-            return str;
-        }
-
-        int idx = str.length();
-        for (; idx > 0; idx--) {
-            if (str.charAt(idx - 1) != '0' || str.charAt(idx - 1) == '.') {
-                break;
+        String v = str;
+        if (str.endsWith("0")) {
+            int idx = str.length();
+            for (; idx > 0; idx--) {
+                if (str.charAt(idx - 1) != '0' || str.charAt(idx - 1) == '.') {
+                    break;
+                }
             }
+            v = str.substring(0, idx);
+            v = v.endsWith(".") ? v.substring(0, v.length() - 1) : v;
         }
-        String v = str.substring(0, idx);
-
-        v = v.endsWith(".") ? v.substring(0, v.length() - 1) : v;
 
         if (v.contains(".") && v.length() - v.indexOf(".") > 7) {
             return v.substring(0, v.indexOf(".") + 7);
         }
-
         return v;
     }
 }

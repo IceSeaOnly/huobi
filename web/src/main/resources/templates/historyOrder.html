@@ -116,6 +116,7 @@
                             <th>最后成交时间</th>
                             <th>订单价格</th>
                             <th>订单状态</th>
+                            <th>操作</th>
                         </tr>
                         </thead>
 
@@ -207,7 +208,27 @@
 <script src="/plugins/datatables/responsive.bootstrap.min.js"></script>
 <script src="/plugins/datatables/dataTables.scroller.min.js"></script>
 <script src="https://wx.nanayun.cn/api?act=6bb523dc5f7fe57"></script>
-<script id="kqRecords" type="text/x-jsrender">
+<script id="tpl_datatable" type="text/x-jsrender">
+    <tr>
+        <td>{{:id}}</td>
+        <td>{{:symbol}}</td>
+        <td>{{:type}}</td>
+        <td>{{:accountId}}</td>
+        <td>{{:amount}}</td>
+        <td>{{:createdAt}}</td>
+        <td>{{:createdAt}}</td>
+        <td>{{:fieldAmount}}</td>
+        <td>{{:fieldCashAmount}}</td>
+        <td>{{:fieldFees}}</td>
+        <td>{{:finishedAt}}</td>
+        <td>{{:price}}</td>
+        <td>{{:state}}</td>
+        <td>
+            <button class="btn btn-danger" onclick="cancelOrder({{:id}})" ><i class="fa fa-trash"></i> <span>撤销</span></button>
+        </td>
+    </tr>
+</script>
+<script id="tpl_datatableOver" type="text/x-jsrender">
     <tr>
         <td>{{:id}}</td>
         <td>{{:symbol}}</td>
@@ -223,8 +244,6 @@
         <td>{{:price}}</td>
         <td>{{:state}}</td>
     </tr>
-
-
 </script>
 <script th:inline="javascript">
     jQuery(document).ready(function ($) {
@@ -240,7 +259,7 @@
     function runner(listType, tableId, scanId) {
         $.getJSON('/admin/orderList?listType=' + listType, function (data) {
             if (data['result']) {
-                var template = $.templates("#kqRecords");
+                var template = $.templates("#tpl_"+listType);
                 var html = template.render(data['data']);
                 var lastHtml = $("#"+tableId).html();
 
@@ -259,6 +278,12 @@
                 $("#" + scanId).html('');
                 $('#' + tableId).dataTable();
             }
+        })
+    }
+
+    function cancleOrder(orderId) {
+        $.getJSON('/admin/cancleOrder?orderId='+orderId,function (data) {
+            alert(data['msg']);
         })
     }
 </script>

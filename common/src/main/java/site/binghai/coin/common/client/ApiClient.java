@@ -260,6 +260,19 @@ public class ApiClient {
     }
 
     /**
+     * 申请撤销一个订单请求
+     * */
+    public Long cancleOrder(String orderId) throws IOException {
+        JSONObject json = jsonCall(HttpType.POST, "/v1/order/orders/"+orderId+"/submitcancel", null, null);
+        if (json != null && "ok".equals(json.getString("status"))) {
+            return Long.parseLong(json.getString("data"));
+        }
+        logger.error("撤销订单失败, response:{}", json);
+        return -1L;
+    }
+
+
+    /**
      * 执行订单
      *
      * @param orderId The id of created order.

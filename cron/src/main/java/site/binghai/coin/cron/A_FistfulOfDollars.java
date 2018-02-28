@@ -78,7 +78,7 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
 
     /**
      * 取出近两小时的分钟级数据
-     * 求震荡幅度方差
+     * 求震荡幅度
      */
     private void deal(List<FcItem> fc, Symbol symbol) {
         List<Kline> klines = CoinUtils.getKlineList(symbol, KlineTime.MIN1, 120);

@@ -25,8 +25,8 @@ public class HuobiApplicationTests {
 		System.out.println(apiClient.listOrder("usdt"));
 	}
 
+	public void cancelOrder(){
 
-	@Autowired
-	private SmsNoticeService smsNoticeService;
+	}
 
 }
