@@ -1,7 +1,5 @@
 package site.binghai.coin.common.utils;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
 /**
  * Created by binghai on 2017/12/31.
  *
