@@ -16,7 +16,7 @@ import javax.persistence.Id;
 public class PrediectResult extends DeleteAble{
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     private String batchNumber;
     private String analysisLevel;
     private String baseCoin;

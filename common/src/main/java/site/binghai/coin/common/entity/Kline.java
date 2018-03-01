@@ -24,7 +24,7 @@ public class Kline extends DeleteAble{
     @Id
     @GeneratedValue
     private long mainId;
-    private long id; // 此处id是火币id，也是火币提供的时间戳
+    private Long id; // 此处id是火币id，也是火币提供的时间戳
     private double amount;
     private int count;
     private double open;

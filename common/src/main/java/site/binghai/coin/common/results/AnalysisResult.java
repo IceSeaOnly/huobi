@@ -20,7 +20,7 @@ import javax.persistence.Id;
 public class AnalysisResult extends DeleteAble {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     /**
      * 固定字段 begin
      */

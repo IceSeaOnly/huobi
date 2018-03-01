@@ -21,7 +21,7 @@ public class Admin extends DeleteAble {
     private String password;
 
     @Override
-    public long getId() {
+    public Long getId() {
         return id;
     }
 }

@@ -31,7 +31,7 @@ public class TransactionMonitor extends DeleteAble{
     private String extra;
 
     @Override
-    public long getId() {
-        return 0;
+    public Long getId() {
+        return id;
     }
 }

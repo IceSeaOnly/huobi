@@ -57,19 +57,18 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
 
         fcs.stream().limit(10).forEach(v -> {
             JSONObject block = new JSONObject();
-            JSONArray arr = new JSONArray();
-            arr.add(String.valueOf(v.getSymbol().getBaseCurrency() + "/" + v.getSymbol().getQuoteCurrency()).toUpperCase());
-            arr.add(removeZero(v.getFc()));
-            arr.add(removeZero(v.getMax()));
-            arr.add(removeZero(v.getMin()));
-            arr.add(removeZero(v.getAvg()));
-            arr.add(removeZero(v.getAvg() / 1.015));
+            
+            block.put("symbol",String.valueOf(v.getSymbol().getBaseCurrency() + "/" + v.getSymbol().getQuoteCurrency()).toUpperCase());
+            block.put("floatValue",removeZero(v.getFc()));
+            block.put("maxValue",removeZero(v.getMax()));
+            block.put("minValue",removeZero(v.getMin()));
+            block.put("avgValue",removeZero(v.getAvg()));
+            block.put("sugPrice",removeZero(v.getAvg() / 1.015));
             double cur = CoinUtils.getLastestKline(v.getSymbol()).getClose();
-            arr.add(cur);
-            arr.add(cur - v.getAvg() / 1.015);
-            arr.add(removeZero((v.getAvg() / v.getMin()) * 100 - 100) + "%");
+            block.put("curPrice",cur);
+            block.put("diffPrice",removeZero(cur - v.getAvg() / 1.015));
+            block.put("estimatedIncome",removeZero((v.getAvg() / v.getMin()) * 100 - 100) + "%");
 
-            block.put("blocks", arr);
             array.add(block);
         });
 

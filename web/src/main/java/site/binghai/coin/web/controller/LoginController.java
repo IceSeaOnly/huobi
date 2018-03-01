@@ -50,6 +50,6 @@ public class LoginController extends BaseController {
         if (admin != null) {
             session.setAttribute("admin", admin);
         }
-        return admin == null ? failed("用户名/密码不正确") : success("/admin/index", "success");
+        return admin == null ? failed("用户名/密码不正确") : success("/admin/", "success");
     }
 }

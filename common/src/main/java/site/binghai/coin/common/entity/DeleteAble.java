@@ -11,10 +11,10 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class DeleteAble {
-    public long created;
+    public Long created;
     public String createdTime;
 
-    public abstract long getId();
+    public abstract Long getId();
 
     public DeleteAble() {
         created = System.currentTimeMillis();

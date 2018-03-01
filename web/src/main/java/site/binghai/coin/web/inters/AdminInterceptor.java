@@ -20,7 +20,7 @@ public class AdminInterceptor extends HandlerInterceptorAdapter {
                 return true;
             }
         }
-        response.sendRedirect("/login");
+        response.sendRedirect("/login#/");
         return false;
     }
 }

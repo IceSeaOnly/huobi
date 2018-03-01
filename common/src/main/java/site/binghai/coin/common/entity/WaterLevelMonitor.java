@@ -28,7 +28,7 @@ public class WaterLevelMonitor extends DeleteAble {
     private String notice; // 手机号，逗号分隔
 
     @Override
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

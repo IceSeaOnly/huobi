@@ -35,12 +35,12 @@ public class OrderController extends BaseController {
      * 1 : only complete
      */
     @RequestMapping("orderList")
-    public Object orderList(Integer listType) {
+    public Object orderList(String listType) {
         List<JSONObject> list = (List<JSONObject>) memberCacheService.get(MemberCacheService.CacheKeys.LIST_ALL_ORDERS);
-        if (listType == null) {
-        } else if (listType == 0) {
+        if (listType == null || "all".equals(listType)) {
+        } else if ("notComplete".equals(listType)) {
             list = list.stream().filter(v -> !isCompleteOrder(v.getString("state"))).collect(Collectors.toList());
-        } else if (listType == 1) {
+        } else if ("complete".equals(listType)) {
             list = list.stream().filter(v -> isCompleteOrder(v.getString("state"))).collect(Collectors.toList());
         }
         return success(list, "ok");
@@ -52,15 +52,17 @@ public class OrderController extends BaseController {
 
     @RequestMapping("cancleOrder")
     public Object cancleOrder(@RequestParam Long orderId) {
-        try {
-            Long oid = apiClient.cancleOrder(orderId.toString());
-            if (oid != null && orderId.equals(oid)) {
-                return success("撤销成功,请等待列表刷新!");
-            }
-            return failed("撤销失败!原因未知!");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return failed("撤销失败!" + e.getMessage());
-        }
+//        try {
+//            Long oid = apiClient.cancleOrder(orderId.toString());
+//            if (oid != null && orderId.equals(oid)) {
+//                return success("撤销成功,请等待列表刷新!");
+//            }
+//            return failed("撤销失败!原因未知!");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return failed("撤销失败!" + e.getMessage());
+//        }
+        System.out.println("撤销订单:" + orderId);
+        return success("success");
     }
 }
