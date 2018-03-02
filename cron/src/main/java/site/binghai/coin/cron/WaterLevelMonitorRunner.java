@@ -52,6 +52,7 @@ public class WaterLevelMonitorRunner {
                         && klines.get(i).getHigh() >= v.getTargetValue()) {
 
                     noticeService.WaterLevelMonitoring(v, CommonUtils.removeZero(cur));
+                    noticeService.wxNoticeWaterLevelMonitoring(v, CommonUtils.removeZero(cur), "", "");
                     v.setComplete(true);
                     v.setCompleteTime(TimeFormat.format(System.currentTimeMillis()));
                     waterLevelMonitorService.update(v);

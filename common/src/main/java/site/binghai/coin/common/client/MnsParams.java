@@ -22,4 +22,5 @@ public class MnsParams {
     private String queueName;
     private String phone;
     private String tpl;
+    private String wxTpl;
 }

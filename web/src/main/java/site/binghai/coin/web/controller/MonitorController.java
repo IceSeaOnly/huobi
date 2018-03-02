@@ -61,12 +61,14 @@ public class MonitorController extends BaseController {
     public Object addMonitor(@RequestParam String baseCoin,
                              @RequestParam String quoteCoin,
                              @RequestParam String notice,
+                             @RequestParam String wxNotice,
                              @RequestParam Double targetValue) {
         WaterLevelMonitor monitor = new WaterLevelMonitor();
         monitor.setBaseCoin(baseCoin);
         monitor.setQuoteCoin(quoteCoin);
         monitor.setNotice(notice);
         monitor.setTargetValue(targetValue);
+        monitor.setWxNotice(wxNotice);
         waterLevelMonitorService.save(monitor);
         return success("success");
     }

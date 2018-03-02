@@ -16,6 +16,7 @@ public class MemberCacheService {
     public enum CacheKeys{
         LIST_ALL_ORDERS("LIST_ALL_ORDERS"),
         FLOAT_TOP_10("FLOAT_TOP_10"),
+        WX_SPY_CACHE("WX_SPY_CACHE"),
 
 
         ;
