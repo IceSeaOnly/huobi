@@ -66,12 +66,12 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
             block.put("sugPrice",removeZero(v.getAvg() / 1.015));
             double cur = CoinUtils.getLastestKline(v.getSymbol()).getClose();
             block.put("curPrice",cur);
-            block.put("diffPrice",removeZero(cur - v.getAvg() / 1.015));
+            block.put("diffPrice",removeZero(cur - Double.parseDouble(block.getString("sugPrice"))));
             block.put("estimatedIncome",removeZero((v.getAvg() / v.getMin()) * 100 - 100) + "%");
 
             array.add(block);
         });
-
+        
         memberCacheService.put(MemberCacheService.CacheKeys.FLOAT_TOP_10, array);
     }
 

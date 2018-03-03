@@ -11,6 +11,7 @@ import site.binghai.coin.common.response.Symbol;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static site.binghai.coin.common.entity.KlineTime.MIN1;
@@ -108,10 +109,17 @@ public class CoinUtils {
      * 获取最新交易聚合详情
      * 包含 买卖量、价
      */
+    private static ConcurrentHashMap<String,Kline> cache = new ConcurrentHashMap<>();
     public static Kline getLastestKline(Symbol symbol) {
+        String sym = symbol.getBaseCurrency()+symbol.getQuoteCurrency();
+        Kline kline = cache.get(sym);
+        if(null != kline && System.currentTimeMillis() - kline.getId() < 10000){
+            return kline;
+        }
+
         JSONObject data = HttpUtils.sendJSONGet("/market/detail/merged", "symbol=" + symbol.getBaseCurrency() + symbol.getQuoteCurrency(), null);
         if (data != null && "ok".equals(data.getString("status"))) {
-            Kline kline = data.getJSONObject("tick").toJavaObject(Kline.class);
+            kline = data.getJSONObject("tick").toJavaObject(Kline.class);
             String bid = data.getJSONObject("tick").getString("bid");
             String ask = data.getJSONObject("tick").getString("ask");
 
@@ -122,6 +130,8 @@ public class CoinUtils {
             kline.setBidAmount(bidParams[1]);
             kline.setAskPrice(askParams[0]);
             kline.setAskAmount(askParams[1]);
+
+            cache.put(sym,kline);
             return kline;
         }
         return null;
