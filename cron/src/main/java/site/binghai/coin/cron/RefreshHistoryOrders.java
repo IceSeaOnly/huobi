@@ -28,7 +28,6 @@ import static site.binghai.coin.common.utils.CommonUtils.removeZero;
  * @ huobi
  */
 @Component
-@EnableScheduling
 public class RefreshHistoryOrders implements ApplicationListener<ContextRefreshedEvent> {
     private final Logger logger = LoggerFactory.getLogger(RefreshHistoryOrders.class);
 

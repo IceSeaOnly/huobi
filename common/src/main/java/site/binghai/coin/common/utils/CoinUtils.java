@@ -109,11 +109,12 @@ public class CoinUtils {
      * 获取最新交易聚合详情
      * 包含 买卖量、价
      */
-    private static ConcurrentHashMap<String,Kline> cache = new ConcurrentHashMap<>();
-    public static Kline getLastestKline(Symbol symbol) {
-        String sym = symbol.getBaseCurrency()+symbol.getQuoteCurrency();
+    private static ConcurrentHashMap<String, Kline> cache = new ConcurrentHashMap<>();
+
+    public static Kline getLastestKline(Symbol symbol, boolean useCache) {
+        String sym = symbol.getBaseCurrency() + symbol.getQuoteCurrency();
         Kline kline = cache.get(sym);
-        if(null != kline && System.currentTimeMillis() - kline.getId() < 10000){
+        if (useCache && null != kline && System.currentTimeMillis() - kline.getId() < 10000) {
             return kline;
         }
 
@@ -131,10 +132,14 @@ public class CoinUtils {
             kline.setAskPrice(askParams[0]);
             kline.setAskAmount(askParams[1]);
 
-            cache.put(sym,kline);
+            cache.put(sym, kline);
             return kline;
         }
         return null;
+    }
+
+    public static Kline getLastestKline(Symbol symbol) {
+        return getLastestKline(symbol, true);
     }
 
     /**

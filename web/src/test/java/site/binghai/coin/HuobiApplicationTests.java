@@ -44,9 +44,5 @@ public class HuobiApplicationTests {
 		smsNoticeService.wxNoticeWaterLevelMonitoring(waterLevelMonitor,"99999"," - ADD"," - remark");
 	}
 
-	@Test
-	public void wxNewRecord(){
-		smsNoticeService.NewRecordInTheDay(Arrays.asList(openid),"111111","BTC/USDT",true);
-		smsNoticeService.NewRecordInTheDay(Arrays.asList(openid),"0.001","BTC/USDT",false);
-	}
+
 }

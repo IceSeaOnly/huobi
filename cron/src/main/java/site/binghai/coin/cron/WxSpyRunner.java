@@ -1,5 +1,7 @@
 package site.binghai.coin.cron;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +39,9 @@ public class WxSpyRunner {
     private WxSpyService spyService;
     @Autowired
     private MemberCacheService memberCacheService;
+    // 缓存当天各类币种的最大最小值
+    private ConcurrentHashMap<String, DataBundle> cacheMap = new ConcurrentHashMap<>();
+
 
     @Scheduled(cron = "0 * * * * ?")
     public void scan() {
@@ -58,15 +64,43 @@ public class WxSpyRunner {
             Symbol symbol = new Symbol(v.get(0).getBaseCoin(), v.get(0).getQuoteCoin());
             Kline day = CoinUtils.getKlineList(symbol, KlineTime.DAY, 1).get(0);
 
-            if (day.getHigh() == day.getClose()) {
+            DataBundle today = getTodayDataBundle(day);
+
+            if (day.getHigh() == today.getMax()) {
                 List<String> openIds = v.stream().map(p -> p.getOpenId()).collect(Collectors.toList());
-                smsNoticeService.NewRecordInTheDay(openIds, String.valueOf(day.getClose()), k.toUpperCase(), true);
-            } else if (day.getLow() == day.getClose()) {
+                smsNoticeService.NewRecordInTheDay(openIds, today.getMax(),today.getMin(),String.valueOf(day.getClose()), k.toUpperCase(), true);
+            } else if (day.getLow() == today.getMin()) {
                 List<String> openIds = v.stream().map(p -> p.getOpenId()).collect(Collectors.toList());
-                smsNoticeService.NewRecordInTheDay(openIds, String.valueOf(day.getClose()), k.toUpperCase(), false);
+                smsNoticeService.NewRecordInTheDay(openIds, today.getMax(),today.getMin(),String.valueOf(day.getClose()), k.toUpperCase(), false);
             }
         });
 
         logger.info("WxSpyRunner complete.");
     }
+
+    private DataBundle getTodayDataBundle(Kline kline) {
+        String coinName = kline.getCoinName() + kline.getQuoteCoinName();
+        DataBundle dataBundle = cacheMap.get(coinName);
+        if (dataBundle == null || dataBundle.getDay() != kline.getId() % 86400) {
+            dataBundle = new DataBundle(coinName, kline.getId() % 86400, kline.getHigh(), kline.getLow());
+            cacheMap.put(coinName, dataBundle);
+        }
+
+        if (dataBundle.getMax() < kline.getHigh()) {
+            dataBundle.setMax(kline.getHigh());
+        } else if (dataBundle.getMin() > kline.getLow()) {
+            dataBundle.setMin(kline.getLow());
+        }
+
+        return dataBundle;
+    }
+}
+
+@Data
+@AllArgsConstructor
+class DataBundle {
+    private String coinName;
+    private long day;
+    private double max;
+    private double min;
 }

@@ -24,7 +24,6 @@ import java.util.List;
  * @ huobi
  */
 @Component
-@EnableScheduling
 public class WaterLevelMonitorRunner {
     private final Logger logger = LoggerFactory.getLogger(WaterLevelMonitorRunner.class);
 

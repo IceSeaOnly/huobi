@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import site.binghai.coin.data.impl.MemberCacheService;
 
 /**
@@ -12,23 +13,15 @@ import site.binghai.coin.data.impl.MemberCacheService;
  * @ huobi
  */
 @RequestMapping("admin")
-@Controller
+@RestController
 public class WorkController extends BaseController{
 
     @Autowired
     private MemberCacheService memberCacheService;
 
-    @RequestMapping("index")
-    public String index(){
-
-        return "works";
-    }
-
 
     @RequestMapping("floatTop10")
-    @ResponseBody
     public Object floatTop10(){
         return success(memberCacheService.get(MemberCacheService.CacheKeys.FLOAT_TOP_10),"success");
     }
-
 }

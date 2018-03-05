@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import site.binghai.coin.common.entity.WxSpy;
 import site.binghai.coin.data.dao.WxSpyDao;
 
+import java.util.List;
+
 /**
  * Created by binghai on 2018/3/2.
  *
@@ -19,5 +21,9 @@ public class WxSpyService extends BaseService<WxSpy> {
     @Override
     JpaRepository<WxSpy, Long> getDao() {
         return dao;
+    }
+
+    public List<WxSpy> findByOpenId(String openid) {
+        return dao.findByOpenId(openid);
     }
 }

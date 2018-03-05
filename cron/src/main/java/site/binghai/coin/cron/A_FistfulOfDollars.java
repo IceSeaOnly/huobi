@@ -34,7 +34,6 @@ import static site.binghai.coin.common.utils.CommonUtils.removeZero;
  * @ huobi
  */
 @Component
-@EnableScheduling
 public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedEvent> {
     private final Logger logger = LoggerFactory.getLogger(A_FistfulOfDollars.class);
 

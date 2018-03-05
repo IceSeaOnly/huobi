@@ -115,7 +115,7 @@ public class SmsNoticeService implements InitializingBean {
     /**
      * 日内新值
      */
-    public void NewRecordInTheDay(List<String> openids, String value, String coinName, boolean isHigh) {
+    public void NewRecordInTheDay(List<String> openids, double max, double min, String value, String coinName, boolean isHigh) {
         if (StringUtils.isEmpty(openids) || openids.equals("#")) {
             return;
         }
@@ -126,7 +126,8 @@ public class SmsNoticeService implements InitializingBean {
         String coin = coinName.toUpperCase();
         for (String openid : openids) {
             String first = String.format("%s 达到日内新%s! %s !", coin, isHigh ? "高" : "低", value);
-            arr.add(priceChangeWxNotice(openid, coin, first, value, null, first, ""));
+            String range = String.format(" 日内波动: %f ~ %f", min, max);
+            arr.add(priceChangeWxNotice(openid, coin, first, value, null, first + range, ""));
         }
         ds.put("datas", arr);
         sendToNoticeServer(ds);
