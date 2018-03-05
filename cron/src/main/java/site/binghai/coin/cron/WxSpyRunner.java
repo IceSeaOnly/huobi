@@ -67,10 +67,10 @@ public class WxSpyRunner {
             day.setQuoteCoinName(symbol.getQuoteCurrency());
             DataBundle today = getTodayDataBundle(day);
 
-            if (day.getHigh() == today.getMax()) {
+            if (today.getStatus() == 0) {
                 List<String> openIds = v.stream().map(p -> p.getOpenId()).collect(Collectors.toList());
                 smsNoticeService.NewRecordInTheDay(openIds, today.getMax(),today.getMin(),String.valueOf(day.getClose()), k.toUpperCase(), true);
-            } else if (day.getLow() == today.getMin()) {
+            } else if (today.getStatus() == 1) {
                 List<String> openIds = v.stream().map(p -> p.getOpenId()).collect(Collectors.toList());
                 smsNoticeService.NewRecordInTheDay(openIds, today.getMax(),today.getMin(),String.valueOf(day.getClose()), k.toUpperCase(), false);
             }
@@ -83,15 +83,19 @@ public class WxSpyRunner {
         String coinName = kline.getCoinName() + kline.getQuoteCoinName();
         DataBundle dataBundle = cacheMap.get(coinName);
         if (dataBundle == null || dataBundle.getDay() != kline.getId() % 86400) {
-            dataBundle = new DataBundle(coinName, kline.getId() % 86400, kline.getHigh(), kline.getLow());
+            dataBundle = new DataBundle(coinName, kline.getId() % 86400, kline.getHigh(), kline.getLow(),-1);
             cacheMap.put(coinName, dataBundle);
         }
 
         if (dataBundle.getMax() < kline.getHigh()) {
+            dataBundle.setStatus(0);
             dataBundle.setMax(kline.getHigh());
         } else if (dataBundle.getMin() > kline.getLow()) {
+            dataBundle.setStatus(1);
             dataBundle.setMin(kline.getLow());
         }
+
+        dataBundle.setStatus(-1);
 
         return dataBundle;
     }
@@ -104,4 +108,5 @@ class DataBundle {
     private long day;
     private double max;
     private double min;
+    private int status;
 }
