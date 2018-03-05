@@ -29,7 +29,7 @@ public class WxContoller extends BaseController{
     @RequestMapping("index")
     public String wxWatch(String openid, ModelMap map) {
         if (openid == null || openid.equals("null")) {
-            return "redirect:http://weixin.qdxiaogutou.com/login.php?back_url=http://btc.nanayun.cn/wx/index";
+            return "redirect:http://weixin.qdxiaogutou.com/login.php?backUrl=http://btc.nanayun.cn/wx/index";
         }
 
         List<WxSpy> my = wxSpyService.findByOpenId(openid);

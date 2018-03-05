@@ -63,7 +63,8 @@ public class WxSpyRunner {
         spyMap.forEach((k, v) -> {
             Symbol symbol = new Symbol(v.get(0).getBaseCoin(), v.get(0).getQuoteCoin());
             Kline day = CoinUtils.getKlineList(symbol, KlineTime.DAY, 1).get(0);
-
+            day.setCoinName(symbol.getBaseCurrency());
+            day.setQuoteCoinName(symbol.getQuoteCurrency());
             DataBundle today = getTodayDataBundle(day);
 
             if (day.getHigh() == today.getMax()) {

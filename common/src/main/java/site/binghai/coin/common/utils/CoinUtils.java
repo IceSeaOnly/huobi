@@ -75,17 +75,22 @@ public class CoinUtils {
      * 获取所有交易对
      */
     private static List<String> coinFilter = Arrays.asList("bt1", "bt2");
+    private static ConcurrentHashMap<String, List<Symbol>> allSymbolCache = new ConcurrentHashMap<>();
+    private static long lastQuery = 1l;
 
     public static List<Symbol> allSymbols() {
-        JSONObject data = HttpUtils.sendJSONGet("/v1/common/symbols", null, null);
-        if (data != null && "ok".equals(data.getString("status"))) {
-            List<Symbol> list = data.getJSONArray("data").toJavaList(Symbol.class);
-            if (CollectionUtils.isEmpty(list)) {
-                return null;
+        if (System.currentTimeMillis() - lastQuery > 10000) {
+            JSONObject data = HttpUtils.sendJSONGet("/v1/common/symbols", null, null);
+            if (data != null && "ok".equals(data.getString("status"))) {
+                List<Symbol> list = data.getJSONArray("data").toJavaList(Symbol.class);
+                if (CollectionUtils.isEmpty(list)) {
+                    return null;
+                }
+                allSymbolCache.put("key", list.stream().filter(v -> !coinFilter.contains(v.getBaseCurrency())).collect(Collectors.toList()));
             }
-            return list.stream().filter(v -> !coinFilter.contains(v.getBaseCurrency())).collect(Collectors.toList());
+            lastQuery = System.currentTimeMillis();
         }
-        return null;
+        return allSymbolCache.get("key");
     }
 
     /**
