@@ -1,9 +1,10 @@
 package site.binghai.coin.web.controller;
 
-import org.apache.commons.lang3.StringUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -120,7 +121,7 @@ public class WxContoller extends BaseController {
     @ResponseBody
     @RequestMapping("addWxMonitor")
     public Object addWxMonitor(@RequestParam String openid, @RequestParam String b, @RequestParam String q, @RequestParam Double t) {
-        if (StringUtils.isBlank(openid) || StringUtils.isBlank(b) || StringUtils.isBlank(q) || t <= 0) {
+        if (StringUtils.isEmpty(openid) || StringUtils.isEmpty(b) || StringUtils.isEmpty(q) || t <= 0) {
             return failed("输入错误!");
         }
 
