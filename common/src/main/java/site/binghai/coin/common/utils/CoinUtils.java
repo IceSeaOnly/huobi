@@ -79,7 +79,7 @@ public class CoinUtils {
     private static long lastQuery = 1l;
 
     public static List<Symbol> allSymbols() {
-        if (System.currentTimeMillis() - lastQuery > 10000) {
+        if (System.currentTimeMillis() - lastQuery > 1000 * 60 * 60) {
             JSONObject data = HttpUtils.sendJSONGet("/v1/common/symbols", null, null);
             if (data != null && "ok".equals(data.getString("status"))) {
                 List<Symbol> list = data.getJSONArray("data").toJavaList(Symbol.class);

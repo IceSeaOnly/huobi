@@ -93,9 +93,9 @@ public class WxSpyRunner {
         } else if (dataBundle.getMin() > kline.getLow()) {
             dataBundle.setStatus(1);
             dataBundle.setMin(kline.getLow());
+        }else{
+            dataBundle.setStatus(-1);
         }
-
-        dataBundle.setStatus(-1);
 
         return dataBundle;
     }

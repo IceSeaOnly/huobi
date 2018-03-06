@@ -31,4 +31,10 @@ public class WaterLevelMonitorService extends BaseService<WaterLevelMonitor> {
                 .filter(v -> !v.isComplete())
                 .collect(Collectors.toList());
     }
+
+
+    public List<WaterLevelMonitor> findByOpenId(String openid){
+        return dao.findByWxNotice(openid);
+    }
+
 }
