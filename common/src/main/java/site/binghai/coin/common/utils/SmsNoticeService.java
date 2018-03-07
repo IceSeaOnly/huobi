@@ -28,6 +28,7 @@ public class SmsNoticeService implements InitializingBean {
     private MnsParams mnsParams;
 
     private void WaterLevelMonitoring(List<String> phones, String setTime, String coinName, String standard, String nowValue) {
+        if(phones == null || phones.size() == 0) return;
         phones.forEach(v -> WaterLevelMonitoring(v, setTime, coinName, standard, nowValue));
     }
 
