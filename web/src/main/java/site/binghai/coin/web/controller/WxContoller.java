@@ -4,6 +4,7 @@ package site.binghai.coin.web.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,7 +72,10 @@ public class WxContoller extends BaseController {
         map.put("allList", all);
         map.put("allList", all);
         map.put("openid", openid);
-        map.put("monitorList", waterLevelMonitorService.findByOpenId(openid));
+        List<WaterLevelMonitor> allM = waterLevelMonitorService.findByOpenId(openid);
+        if (!CollectionUtils.isEmpty(allM)) {
+            map.put("monitorList", allM.stream().filter(v -> !v.isComplete()).collect(Collectors.toList()));
+        }
         return "wxWatch";
     }
 
@@ -150,9 +154,9 @@ public class WxContoller extends BaseController {
 
     @ResponseBody
     @RequestMapping("delWxMonitor")
-    public Object delWxMonitor(@RequestParam String openid,@RequestParam Long id){
+    public Object delWxMonitor(@RequestParam String openid, @RequestParam Long id) {
         WaterLevelMonitor waterLevelMonitor = waterLevelMonitorService.findById(id);
-        if(waterLevelMonitor != null && waterLevelMonitor.getWxNotice().equals(openid)){
+        if (waterLevelMonitor != null && waterLevelMonitor.getWxNotice().equals(openid)) {
             waterLevelMonitorService.delete(id);
         }
         return success("success");
