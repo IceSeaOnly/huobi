@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"><html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>订阅中心</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+</head>
+
+<body>
+<div class="page-group">
+    <div class="page page-current">
+        <!-- 你的html代码 begin -->
+        <div class="content">
+            <div class="buttons-tab">
+                <a href="#tab1" class="tab-link active button">我的订阅</a>
+                <!--<a href="#tab2" class="tab-link button">订阅中心</a>-->
+            </div>
+            <div class="tabs">
+                <div id="tab1" class="tab active">
+                    <div class="list-block media-list">
+                        <ul>
+                            <li th:each="record:${myList}">
+                                <div class="item-content">
+                                    <div class="item-inner">
+                                        <div class="item-title-row">
+                                            <div class="item-title" th:text="${record.type}">标题</div>
+                                            <div class="item-after">
+                                                <label class="label-switch">
+                                                    <input type="checkbox" th:onchange="${'delSub('+record.code+')'}" checked="checked" th:if="${record.extra==1}">
+                                                    <input type="checkbox" th:onchange="${'addSub('+record.code+')'}" th:if="${record.extra==0}">
+                                                    <div class="checkbox"></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="tab2" class="tab">
+
+                </div>
+
+            </div>
+        </div>
+        <!-- 你的html代码 end -->
+    </div>
+</div>
+<script type='text/javascript' src='http://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm-extend.min.js' charset='utf-8'></script>
+</body>
+
+<script th:inline="javascript">
+    var openId = [[${openid}]];
+
+    function delSub(id) {
+        $.getJSON('/wx/delSub?openid='+openId+'&id='+id,function (data, status) {
+            if(data.result){
+                window.location.reload();
+            }else{
+                $.alert(data.msg);
+            }
+        })
+    }
+
+    function addSub(idx) {
+        $.getJSON('/wx/addSub?openid='+openId+'&id='+idx,function (data, status) {
+            if(data.result){
+                window.location.reload();
+            }else{
+                $.alert(data.msg);
+            }
+        })
+    }
+
+</script>
+
+</html>

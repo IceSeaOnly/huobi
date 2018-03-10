@@ -10,10 +10,7 @@ import site.binghai.coin.common.entity.Kline;
 import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.entity.WaterLevelMonitor;
 import site.binghai.coin.common.response.Symbol;
-import site.binghai.coin.common.utils.CoinUtils;
-import site.binghai.coin.common.utils.CommonUtils;
-import site.binghai.coin.common.utils.SmsNoticeService;
-import site.binghai.coin.common.utils.TimeFormat;
+import site.binghai.coin.common.utils.*;
 import site.binghai.coin.data.impl.WaterLevelMonitorService;
 
 import java.util.List;
@@ -27,6 +24,8 @@ import java.util.List;
 public class WaterLevelMonitorRunner {
     private final Logger logger = LoggerFactory.getLogger(WaterLevelMonitorRunner.class);
 
+    @Autowired
+    private WxNoticeService wxNoticeService;
     @Autowired
     private WaterLevelMonitorService waterLevelMonitorService;
     @Autowired
@@ -51,7 +50,7 @@ public class WaterLevelMonitorRunner {
                         && klines.get(i).getHigh() >= v.getTargetValue()) {
 
                     noticeService.WaterLevelMonitoring(v, CommonUtils.removeZero(cur));
-                    noticeService.wxNoticeWaterLevelMonitoring(v, CommonUtils.removeZero(cur), "", "");
+                    wxNoticeService.wxNoticeWaterLevelMonitoring(v, CommonUtils.removeZero(cur), "", "");
                     v.setComplete(true);
                     v.setCompleteTime(TimeFormat.format(System.currentTimeMillis()));
                     waterLevelMonitorService.update(v);

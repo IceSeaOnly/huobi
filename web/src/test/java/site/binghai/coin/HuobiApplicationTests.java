@@ -9,6 +9,7 @@ import site.binghai.coin.common.client.ApiClient;
 import site.binghai.coin.common.entity.WaterLevelMonitor;
 import site.binghai.coin.common.utils.SmsNoticeService;
 import site.binghai.coin.common.utils.TimeFormat;
+import site.binghai.coin.common.utils.WxNoticeService;
 
 import java.util.Arrays;
 
@@ -18,6 +19,8 @@ public class HuobiApplicationTests {
 
 	@Autowired
 	private ApiClient apiClient;
+	@Autowired
+	private WxNoticeService wxNoticeService;
 	@Autowired
 	private SmsNoticeService smsNoticeService;
 
@@ -41,7 +44,7 @@ public class HuobiApplicationTests {
 		waterLevelMonitor.setId(1l);
 		waterLevelMonitor.setCreatedTime(TimeFormat.format(System.currentTimeMillis()));
 
-		smsNoticeService.wxNoticeWaterLevelMonitoring(waterLevelMonitor,"99999"," - ADD"," - remark");
+		wxNoticeService.wxNoticeWaterLevelMonitoring(waterLevelMonitor,"99999"," - ADD"," - remark");
 	}
 
 

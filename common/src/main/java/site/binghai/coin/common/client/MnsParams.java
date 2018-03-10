@@ -23,4 +23,6 @@ public class MnsParams {
     private String phone;
     private String tpl;
     private String wxTpl;
+    private String wxWaterMonitorTpl;
+    private String wxEmergenceNewsTpl;
 }

@@ -14,6 +14,7 @@ import site.binghai.coin.common.entity.WxSpy;
 import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.CoinUtils;
 import site.binghai.coin.common.utils.SmsNoticeService;
+import site.binghai.coin.common.utils.WxNoticeService;
 import site.binghai.coin.data.impl.MemberCacheService;
 import site.binghai.coin.data.impl.WxSpyService;
 
@@ -33,6 +34,8 @@ import java.util.stream.Collectors;
 public class WxSpyRunner {
     private final Logger logger = LoggerFactory.getLogger(WxSpyRunner.class);
 
+    @Autowired
+    private WxNoticeService wxNoticeService;
     @Autowired
     private SmsNoticeService smsNoticeService;
     @Autowired
@@ -69,10 +72,10 @@ public class WxSpyRunner {
 
             if (today.getStatus() == 0) {
                 List<String> openIds = v.stream().map(p -> p.getOpenId()).collect(Collectors.toList());
-                smsNoticeService.NewRecordInTheDay(openIds, today.getMax(),today.getMin(),String.valueOf(day.getClose()), k.toUpperCase(), true);
+                wxNoticeService.NewRecordInTheDay(openIds, today.getMax(),today.getMin(),String.valueOf(day.getClose()), k.toUpperCase(), true);
             } else if (today.getStatus() == 1) {
                 List<String> openIds = v.stream().map(p -> p.getOpenId()).collect(Collectors.toList());
-                smsNoticeService.NewRecordInTheDay(openIds, today.getMax(),today.getMin(),String.valueOf(day.getClose()), k.toUpperCase(), false);
+                wxNoticeService.NewRecordInTheDay(openIds, today.getMax(),today.getMin(),String.valueOf(day.getClose()), k.toUpperCase(), false);
             }
         });
 

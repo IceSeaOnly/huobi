@@ -9,14 +9,18 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import site.binghai.coin.common.entity.Subscribe;
 import site.binghai.coin.common.entity.WaterLevelMonitor;
 import site.binghai.coin.common.entity.WxSpy;
+import site.binghai.coin.common.enums.SubscribeType;
 import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.CoinUtils;
+import site.binghai.coin.data.impl.SubscribeService;
 import site.binghai.coin.data.impl.WaterLevelMonitorService;
 import site.binghai.coin.data.impl.WxSpyService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,9 +34,62 @@ import java.util.stream.Collectors;
 public class WxContoller extends BaseController {
 
     @Autowired
+    private SubscribeService subscribeService;
+    @Autowired
     private WxSpyService wxSpyService;
     @Autowired
     private WaterLevelMonitorService waterLevelMonitorService;
+
+    // 各种订阅使用
+    @RequestMapping("subscribe")
+    public String subscribe(String openid, ModelMap map) {
+        if (openid == null || openid.equals("null")) {
+            return "redirect:http://weixin.qdxiaogutou.com/login.php?backUrl=http://btc.nanayun.cn/wx/subscribe";
+        }
+
+        List<SubscribeType> subscribeTypes = Arrays.asList(SubscribeType.values());
+        for (SubscribeType ss : subscribeTypes) {
+            if (subscribeService.findByOpenIdAndType(openid, ss) != null) {
+                ss.setExtra(1);
+            } else {
+                ss.setExtra(0);
+            }
+        }
+        map.put("myList", subscribeTypes);
+        map.put("openid", openid);
+        return "subscribe";
+    }
+
+    @ResponseBody
+    @RequestMapping("addSub")
+    public Object addSub(@RequestParam String openid, @RequestParam Integer id) {
+        SubscribeType type = SubscribeType.codeOf(id);
+        if (type == null) {
+            return failed("非法参数");
+        }
+
+        if (subscribeService.findByOpenIdAndType(openid, type) == null) {
+            subscribeService.save(new Subscribe(openid, type.getCode()));
+        }
+
+        return success("success");
+    }
+
+    @ResponseBody
+    @RequestMapping("delSub")
+    public Object delSub(@RequestParam String openid, @RequestParam Integer id) {
+        SubscribeType type = SubscribeType.codeOf(id);
+        if (type == null) {
+            return failed("非法参数");
+        }
+
+        Subscribe sub = subscribeService.findByOpenIdAndType(openid, type);
+        if (sub != null) {
+            subscribeService.delete(sub.getId());
+        }
+
+        return success("success");
+    }
 
     @RequestMapping("index")
     public String wxWatch(String openid, ModelMap map) {
