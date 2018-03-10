@@ -38,7 +38,7 @@ public class JinSeNewCron {
             return;
         }
 
-        JSONArray array = resp.getJSONArray("list").getJSONObject(0).getJSONArray("live");
+        JSONArray array = resp.getJSONArray("list").getJSONObject(0).getJSONArray("lives");
         for (int i = 0; i < array.size(); i++) {
             JSONObject obj = array.getJSONObject(i);
             String hash = MD5.encryption(obj.getString("content"));
