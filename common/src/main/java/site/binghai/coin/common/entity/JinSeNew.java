@@ -4,6 +4,7 @@ import lombok.Data;
 import site.binghai.coin.common.utils.MD5;
 import site.binghai.coin.common.utils.TimeFormat;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,6 +21,7 @@ public class JinSeNew extends DeleteAble {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(columnDefinition = "TEXT")
     private String content;
     private int grade;
     private long created_at;

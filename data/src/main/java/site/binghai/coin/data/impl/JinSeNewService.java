@@ -35,4 +35,8 @@ public class JinSeNewService extends BaseService<JinSeNew>{
     public List<JinSeNew> lasted50() {
         return jinSeDao.findAllByIdOrderByIdDesc(new PageRequest(0,50));
     }
+
+    public List<JinSeNew> findPageAbleDesc(Integer pageSize, Integer page) {
+        return jinSeDao.findAllByIdOrderByIdDesc(new PageRequest(page,pageSize));
+    }
 }

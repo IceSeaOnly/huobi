@@ -1,5 +1,6 @@
 package site.binghai.coin.data.impl;
 
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import site.binghai.coin.common.entity.DeleteAble;
