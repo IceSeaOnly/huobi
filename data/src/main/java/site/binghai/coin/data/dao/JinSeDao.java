@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface JinSeDao extends JpaRepository<JinSeNew,Long> {
     List<JinSeNew> findByHashCode(String hash);
-    List<JinSeNew> findAllByIdOrderByIdDesc(Pageable pageable);
+    List<JinSeNew> findAllByOrderByIdDesc(Pageable pageable);
 }
