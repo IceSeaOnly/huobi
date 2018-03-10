@@ -87,7 +87,7 @@ public class SmsNoticeService implements InitializingBean {
     }
 
     public void wxNoticeWaterLevelMonitoring(WaterLevelMonitor v, String nowValue, String firstText, String remark) {
-        if (null == v || "#".equals(v.getWxNotice())) {
+        if (null == v || null == v.getWxNotice()|| "#".equals(v.getWxNotice())) {
             return;
         }
 
