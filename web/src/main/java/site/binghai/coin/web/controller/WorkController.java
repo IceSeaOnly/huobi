@@ -39,6 +39,6 @@ public class WorkController extends BaseController{
         object.put("total",jinSeNewService.count());
         object.put("pageSize",pageSize);
 
-        return object;
+        return success(object,"success");
     }
 }
