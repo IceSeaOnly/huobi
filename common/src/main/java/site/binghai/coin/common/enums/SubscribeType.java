@@ -1,5 +1,6 @@
 package site.binghai.coin.common.enums;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,6 +20,7 @@ public enum SubscribeType {
     private static Map<Integer,SubscribeType> maps = null;
 
     static {
+        maps = new HashMap<>();
         for (SubscribeType subscribeType : SubscribeType.values()) {
             maps.put(subscribeType.getCode(),subscribeType);
         }

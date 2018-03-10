@@ -68,6 +68,9 @@ public class JinSeNewCron {
         if (null == lasted) return;
 
         List<Subscribe> subscribes = subscribeService.findByType(SubscribeType.EmergenceNews);
+        if(null == subscribes){
+            return;
+        }
         List<String> openids = subscribes.stream().map(v -> v.getOpenid()).collect(Collectors.toList());
 
         lasted.forEach(v -> {
