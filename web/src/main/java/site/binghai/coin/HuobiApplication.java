@@ -17,6 +17,8 @@ public class HuobiApplication {
     public static void main(String[] args) {
         SetupUtils.onSystemStart(args);
         if (SetupUtils.envHasParam("-use:proxy")) {
+            System.out.println("Net Proxy Switch Active.");
+
             String proxyHost = "127.0.0.1";
             String proxyPort = "1080";
 
