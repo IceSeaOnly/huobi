@@ -14,6 +14,7 @@ import site.binghai.coin.common.entity.WxSpy;
 import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.CoinUtils;
 import site.binghai.coin.common.utils.SmsNoticeService;
+import site.binghai.coin.common.utils.TimeFormat;
 import site.binghai.coin.common.utils.WxNoticeService;
 import site.binghai.coin.data.impl.MemberCacheService;
 import site.binghai.coin.data.impl.WxSpyService;
@@ -85,8 +86,8 @@ public class WxSpyRunner {
     private DataBundle getTodayDataBundle(Kline kline) {
         String coinName = kline.getCoinName() + kline.getQuoteCoinName();
         DataBundle dataBundle = cacheMap.get(coinName);
-        if (dataBundle == null || dataBundle.getDay() != kline.getId() % 86400) {
-            dataBundle = new DataBundle(coinName, kline.getId() % 86400, kline.getHigh(), kline.getLow(),-1);
+        if (dataBundle == null || dataBundle.getDay() != TimeFormat.getTimesmorning()) {
+            dataBundle = new DataBundle(coinName, TimeFormat.getTimesmorning(), kline.getHigh(), kline.getLow(),-1);
             cacheMap.put(coinName, dataBundle);
         }
 
