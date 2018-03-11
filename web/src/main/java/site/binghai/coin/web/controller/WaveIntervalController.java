@@ -36,7 +36,7 @@ public class WaveIntervalController extends BaseController {
     public Object waveInterval() {
         JSONObject finalResp = new JSONObject();
 
-        Symbol symbol = new Symbol();
+        Symbol symbol = new Symbol("btc","usdt");
         List<Kline> list = CoinUtils.getKlineList(symbol, KlineTime.MIN15, 960);
 
         if (CollectionUtils.isEmpty(list)) {
