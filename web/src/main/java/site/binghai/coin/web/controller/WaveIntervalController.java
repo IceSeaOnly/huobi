@@ -46,7 +46,8 @@ public class WaveIntervalController extends BaseController {
 
         TreeMap<Integer, Integer> maps = new TreeMap<>();
 
-        prices.forEach(p -> {
+        prices.forEach(v -> {
+            int p = v/100;
             if (maps.containsKey(p)) {
                 int newV = maps.get(p) + 1;
                 maps.put(p, newV);
@@ -117,6 +118,7 @@ public class WaveIntervalController extends BaseController {
         statisticData.add(buildStatisticData("平均涨幅", getAvg(riseRange)));
         statisticData.add(buildStatisticData("平均跌幅", getAvg(fallRange)));
 
+        finalResp.put("statisticData",statisticData);
         return success(finalResp, "success");
     }
 
