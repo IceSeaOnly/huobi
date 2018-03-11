@@ -66,9 +66,9 @@ public class MonitorController extends BaseController {
         WaterLevelMonitor monitor = new WaterLevelMonitor();
         monitor.setBaseCoin(baseCoin);
         monitor.setQuoteCoin(quoteCoin);
-        monitor.setNotice(notice);
+        monitor.setNotice(notice.trim());
         monitor.setTargetValue(targetValue);
-        monitor.setWxNotice(wxNotice);
+        monitor.setWxNotice(wxNotice.trim());
         waterLevelMonitorService.save(monitor);
         return success("success");
     }

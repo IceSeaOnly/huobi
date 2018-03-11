@@ -28,7 +28,7 @@ public class Kline extends DeleteAble{
     private double amount;
     private int count;
     private double open;
-    private double close;
+    private Double close;
     private double low;
     private double high;
     private double vol;

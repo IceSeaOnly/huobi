@@ -46,8 +46,9 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
         JSONArray array = new JSONArray();
 
         List<FcItem> fcs = new ArrayList<>(); // 方差
-        CoinUtils.allSymbols()
-                .parallelStream()
+        List<Symbol> symbols = CoinUtils.allSymbols();
+        if(CollectionUtils.isEmpty(symbols)) return;
+        symbols.parallelStream()
 //                .peek(System.out::println)
                 .filter(v -> v.getQuoteCurrency().equals("usdt"))
                 .forEach(v -> deal(fcs, v));
@@ -56,21 +57,21 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
 
         fcs.stream().limit(10).forEach(v -> {
             JSONObject block = new JSONObject();
-            
-            block.put("symbol",String.valueOf(v.getSymbol().getBaseCurrency() + "/" + v.getSymbol().getQuoteCurrency()).toUpperCase());
-            block.put("floatValue",removeZero(v.getFc()));
-            block.put("maxValue",removeZero(v.getMax()));
-            block.put("minValue",removeZero(v.getMin()));
-            block.put("avgValue",removeZero(v.getAvg()));
-            block.put("sugPrice",removeZero(v.getAvg() / 1.015));
+
+            block.put("symbol", String.valueOf(v.getSymbol().getBaseCurrency() + "/" + v.getSymbol().getQuoteCurrency()).toUpperCase());
+            block.put("floatValue", removeZero(v.getFc()));
+            block.put("maxValue", removeZero(v.getMax()));
+            block.put("minValue", removeZero(v.getMin()));
+            block.put("avgValue", removeZero(v.getAvg()));
+            block.put("sugPrice", removeZero(v.getAvg() / 1.015));
             double cur = CoinUtils.getLastestKline(v.getSymbol()).getClose();
-            block.put("curPrice",cur);
-            block.put("diffPrice",removeZero(cur - Double.parseDouble(block.getString("sugPrice"))));
-            block.put("estimatedIncome",removeZero((v.getAvg() / v.getMin()) * 100 - 100) + "%");
+            block.put("curPrice", cur);
+            block.put("diffPrice", removeZero(cur - Double.parseDouble(block.getString("sugPrice"))));
+            block.put("estimatedIncome", removeZero((v.getAvg() / v.getMin()) * 100 - 100) + "%");
 
             array.add(block);
         });
-        
+
         memberCacheService.put(MemberCacheService.CacheKeys.FLOAT_TOP_10, array);
     }
 
@@ -107,7 +108,7 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
                 .map(v -> v / base)
                 .reduce(0.0, Double::sum);
 
-        return r/values.size();
+        return r / values.size();
     }
 
     @Override

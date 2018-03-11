@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
  *
  * @ huobi
  */
-@RequestMapping("open")
-@RestController
-@CrossOrigin(origins = "*")
+//@RequestMapping("open")
+//@RestController
+//@CrossOrigin(origins = "*")
 public class OutApi extends BaseController {
 
     private final Logger logger = LoggerFactory.getLogger(OutApi.class);

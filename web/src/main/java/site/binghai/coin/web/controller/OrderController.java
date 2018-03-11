@@ -52,17 +52,17 @@ public class OrderController extends BaseController {
 
     @RequestMapping("cancleOrder")
     public Object cancleOrder(@RequestParam Long orderId) {
-//        try {
-//            Long oid = apiClient.cancleOrder(orderId.toString());
-//            if (oid != null && orderId.equals(oid)) {
-//                return success("撤销成功,请等待列表刷新!");
-//            }
-//            return failed("撤销失败!原因未知!");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return failed("撤销失败!" + e.getMessage());
-//        }
-        System.out.println("撤销订单:" + orderId);
-        return success("success");
+        try {
+            Long oid = apiClient.cancleOrder(orderId.toString());
+            if (oid != null && orderId.equals(oid)) {
+                return success("撤销成功,请等待列表刷新!");
+            }
+            return failed("撤销失败!原因未知!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return failed("撤销失败!" + e.getMessage());
+        }
+//        System.out.println("撤销订单:" + orderId);
+//        return success("success");
     }
 }

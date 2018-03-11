@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 @PropertySource("classpath:authentication.properties")
 @Data
 public class MnsParams {
+    private String serverHead;
     private String accountendpoint;
     private String accesskeyid;
     private String accesskeysecret;

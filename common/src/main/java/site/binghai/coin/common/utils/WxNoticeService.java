@@ -94,7 +94,7 @@ public class WxNoticeService extends BaseWxNoticeService {
             data.put("keyword4", newItem("请看正文"));
             data.put("remark", newItem(v.getContent()));
 
-            arr.add(commonTPLMaker(mnsParams.getWxEmergenceNewsTpl(), openid, "", data));
+            arr.add(commonTPLMaker(mnsParams.getWxEmergenceNewsTpl(), openid, mnsParams.getServerHead()+"/open/jinseDetail?id="+v.getId(), data));
         });
 
         ds.put("datas", arr);

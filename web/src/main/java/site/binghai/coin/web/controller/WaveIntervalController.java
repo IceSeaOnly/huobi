@@ -1,6 +1,8 @@
 package site.binghai.coin.web.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,32 +21,33 @@ import java.util.stream.Collectors;
  *
  * @ huobi
  */
-@RequestMapping("open")
+@RequestMapping("admin")
 @RestController
-@CrossOrigin(origins = "*")
 public class WaveIntervalController extends BaseController {
-    private static List<String> last5Waves = new ArrayList<>();
 
-    @RequestMapping("waveInterval")
-    public Object waveInterval(Symbol symbol, @RequestParam int size) {
-        if (symbol == null) {
-            return "symbol not set";
+    /**
+     * 10天内btc波动数据
+     * chartData: [], 波动曲线，{ price: '8840', counts: 38 } jsonArray
+     * statisticData: [], {name: '今日注册',value: '12678',} 6个标签 jsonArray
+     * <p>
+     * 连续涨,连续跌，最久连续涨，最久连续跌，平均涨幅，平均跌幅
+     */
+    @RequestMapping("btcDataStatistics")
+    public Object waveInterval() {
+        JSONObject finalResp = new JSONObject();
+
+        Symbol symbol = new Symbol();
+        List<Kline> list = CoinUtils.getKlineList(symbol, KlineTime.MIN15, 960);
+
+        if (CollectionUtils.isEmpty(list)) {
+            return failed("time out");
         }
-
-
-        List<Kline> list = CoinUtils.getKlineList(symbol, KlineTime.MIN15, size);
-        String startTime = TimeFormat.format(list.get(0).getId() * 1000);
-        String endTime = TimeFormat.format(list.get(list.size() - 1).getId() * 1000);
-        List<Double> prices = list.stream().map(v -> v.getClose()).collect(Collectors.toList());
+        List<Integer> prices = list.stream().map(v -> v.getClose().intValue()).collect(Collectors.toList());
         Collections.sort(prices);
-
-        int yMin = prices.get(0).intValue();
-        int yMax = prices.get(prices.size() - 1).intValue();
 
         TreeMap<Integer, Integer> maps = new TreeMap<>();
 
-        prices.forEach(v -> {
-            int p = (int) (v / 100);
+        prices.forEach(p -> {
             if (maps.containsKey(p)) {
                 int newV = maps.get(p) + 1;
                 maps.put(p, newV);
@@ -53,37 +56,75 @@ public class WaveIntervalController extends BaseController {
             }
         });
 
-        List<Integer> dataAxis = new ArrayList<>();
-        List<Object> data = new ArrayList<>();
-        List<Integer> dataShadow = new ArrayList<>();
-
-        double curDf = CoinUtils.getLastestKline(symbol).getClose();
-        int current = (int) (curDf / 100);
-        last5Waves.add(String.format("$%.2f  ", curDf));
-        if (last5Waves.size() > 5) {
-            last5Waves.remove(0);
-        }
-        StringBuilder shadowMsg = new StringBuilder();
-        for (String v : last5Waves){
-            shadowMsg.append(v);
-        }
-
+        JSONArray chartData = new JSONArray();
         maps.forEach((k, v) -> {
-            dataAxis.add(k);
-            data.add(k == current ? 0 : v);
-            dataShadow.add(k == current ? v : 0);
+            JSONObject item = new JSONObject();
+            item.put("price", k);
+            item.put("counts", v);
+            chartData.add(item);
         });
+        finalResp.put("chartData", chartData);
 
-        JSONObject resp = new JSONObject();
-        resp.put("yMax", yMax);
-        resp.put("yMin", yMin);
-        resp.put("dataAxis", dataAxis);
-        resp.put("data", data);
-        resp.put("dataShadow", dataShadow);
-        resp.put("shadowMsg", shadowMsg.toString());
-        resp.put("msg", String.format("from %s to %s @ 【 $%.2f 】", endTime, startTime, curDf));
+        List<Integer> riseList = new ArrayList<>();
+        List<Integer> fallList = new ArrayList<>();
+        List<Double> riseRange = new ArrayList<>();
+        List<Double> fallRange = new ArrayList<>();
+        int rise = 0;
+        int fall = 0;
+        int riseStart = prices.get(0);
+        int fallStart = prices.get(0);
 
-        return resp;
+
+        for (int i = 1; i < prices.size(); i++) {
+            if (prices.get(i) >= prices.get(i - 1)) {
+                rise++;
+                if (fall != 0) {
+                    fallList.add(fall);
+                    fallRange.add(prices.get(i - 1) * 1.0 / fallStart);
+                }
+                fall = 0;
+                fallStart = prices.get(i);
+            } else {
+                fall++;
+                if (rise != 0) {
+                    riseList.add(rise);
+                    riseRange.add(prices.get(i - 1) * 1.0 / riseStart);
+                }
+                rise = 0;
+                riseStart = prices.get(i);
+            }
+        }
+
+        Collections.sort(riseList);
+        Collections.sort(fallList);
+        Collections.sort(riseRange);
+        Collections.sort(fallRange);
+
+        JSONArray statisticData = new JSONArray();
+        statisticData.add(buildStatisticData("连续涨", riseList.size()));
+        statisticData.add(buildStatisticData("连续跌", fallList.size()));
+        statisticData.add(buildStatisticData("最久连续涨", riseList.get(riseList.size() - 1)));
+        statisticData.add(buildStatisticData("最久连续跌", fallList.get(fallList.size() - 1)));
+        statisticData.add(buildStatisticData("平均涨幅", getAvg(riseRange)));
+        statisticData.add(buildStatisticData("平均跌幅", getAvg(fallRange)));
+
+        return success(finalResp,"success");
+    }
+
+    private double getAvg(List<Double> list) {
+        if (null == list || list.size() == 0) return 0;
+        double sum = 0;
+        for (Double aDouble : list) {
+            sum += aDouble;
+        }
+        return sum / list.size();
+    }
+
+    private Object buildStatisticData(String s, Object v) {
+        JSONObject object = new JSONObject();
+        object.put("name", s);
+        object.put("value", v);
+        return object;
     }
 
     private String toLOGO(Integer v) {

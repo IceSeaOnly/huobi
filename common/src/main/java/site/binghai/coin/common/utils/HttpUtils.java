@@ -54,7 +54,7 @@ public class HttpUtils {
             }
         } catch (Exception e) {
             System.out.println("发送GET请求出现异常！" + e);
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         // 使用finally块来关闭输入流
         finally {
@@ -114,7 +114,7 @@ public class HttpUtils {
             }
         } catch (Exception e) {
             System.out.println("发送 POST 请求出现异常！" + e);
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         //使用finally块来关闭输出流、输入流
         finally {

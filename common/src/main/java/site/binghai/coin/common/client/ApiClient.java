@@ -198,6 +198,7 @@ public class ApiClient {
         List<HuobiOrder> list = new ArrayList<>();
 
         List<Symbol> symbols = CoinUtils.allSymbols();
+        if(CollectionUtils.isEmpty(symbols)) return new ArrayList<>();
         symbols.stream()
                 .filter(v -> v.getQuoteCurrency().equals(filterCoin))
                 .forEach(v -> {
