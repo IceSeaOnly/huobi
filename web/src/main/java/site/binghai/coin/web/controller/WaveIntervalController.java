@@ -36,14 +36,13 @@ public class WaveIntervalController extends BaseController {
     public Object waveInterval() {
         JSONObject finalResp = new JSONObject();
 
-        Symbol symbol = new Symbol("btc","usdt");
+        Symbol symbol = new Symbol("btc", "usdt");
         List<Kline> list = CoinUtils.getKlineList(symbol, KlineTime.MIN15, 960);
 
         if (CollectionUtils.isEmpty(list)) {
             return failed("time out");
         }
         List<Integer> prices = list.stream().map(v -> v.getClose().intValue()).collect(Collectors.toList());
-        Collections.sort(prices);
 
         TreeMap<Integer, Integer> maps = new TreeMap<>();
 
@@ -80,7 +79,7 @@ public class WaveIntervalController extends BaseController {
                 rise++;
                 if (fall != 0) {
                     fallList.add(fall);
-                    fallRange.add(prices.get(i - 1) * 1.0 / fallStart);
+                    fallRange.add(fallStart * 1.0 / prices.get(i - 1) - 1);
                 }
                 fall = 0;
                 fallStart = prices.get(i);
@@ -88,11 +87,21 @@ public class WaveIntervalController extends BaseController {
                 fall++;
                 if (rise != 0) {
                     riseList.add(rise);
-                    riseRange.add(prices.get(i - 1) * 1.0 / riseStart);
+                    riseRange.add(prices.get(i - 1) * 1.0 / riseStart - 1);
                 }
                 rise = 0;
                 riseStart = prices.get(i);
             }
+        }
+
+        if (rise != 0) {
+            riseList.add(rise);
+            riseRange.add(prices.get(prices.size() - 1) * 1.0 / riseStart - 1);
+        }
+
+        if (fall != 0) {
+            fallList.add(fall);
+            fallRange.add(fallStart * 1.0 / prices.get(prices.size() - 1) - 1);
         }
 
         Collections.sort(riseList);
@@ -108,7 +117,7 @@ public class WaveIntervalController extends BaseController {
         statisticData.add(buildStatisticData("平均涨幅", getAvg(riseRange)));
         statisticData.add(buildStatisticData("平均跌幅", getAvg(fallRange)));
 
-        return success(finalResp,"success");
+        return success(finalResp, "success");
     }
 
     private double getAvg(List<Double> list) {
