@@ -40,7 +40,7 @@ public class A_FistfulOfDollars implements ApplicationListener<ContextRefreshedE
     @Autowired
     private MemberCacheService memberCacheService;
 
-    @Scheduled(cron = "0/20 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void work() {
         logger.info("STARTED.");
         JSONArray array = new JSONArray();

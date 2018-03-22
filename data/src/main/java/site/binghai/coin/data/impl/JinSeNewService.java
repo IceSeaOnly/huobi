@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import site.binghai.coin.common.entity.JinSeNew;
+import site.binghai.coin.common.utils.TimeFormat;
 import site.binghai.coin.data.dao.JinSeDao;
 
 import java.util.List;
@@ -38,5 +39,10 @@ public class JinSeNewService extends BaseService<JinSeNew>{
 
     public List<JinSeNew> findPageAbleDesc(Integer pageSize, Integer page) {
         return jinSeDao.findAllByOrderByIdDesc(new PageRequest(page,pageSize));
+    }
+
+    public List<JinSeNew> findTodayNews() {
+        long zero = TimeFormat.getTimesmorning();
+        return jinSeDao.findAllByCreatedAfter(zero);
     }
 }

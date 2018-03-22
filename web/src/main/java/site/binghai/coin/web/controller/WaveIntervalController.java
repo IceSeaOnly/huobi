@@ -122,13 +122,13 @@ public class WaveIntervalController extends BaseController {
         return success(finalResp, "success");
     }
 
-    private double getAvg(List<Double> list) {
-        if (null == list || list.size() == 0) return 0;
+    private String getAvg(List<Double> list) {
+        if (null == list || list.size() == 0) return "-%";
         double sum = 0;
         for (Double aDouble : list) {
             sum += aDouble;
         }
-        return sum / list.size();
+        return String.format("%.2f",sum / list.size())+"%";
     }
 
     private Object buildStatisticData(String s, Object v) {
