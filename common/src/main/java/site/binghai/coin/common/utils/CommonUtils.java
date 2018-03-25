@@ -1,5 +1,8 @@
 package site.binghai.coin.common.utils;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Created by binghai on 2017/12/31.
  *
@@ -77,5 +80,14 @@ public class CommonUtils {
             return v.substring(0, v.indexOf(".") + 7);
         }
         return v;
+    }
+
+    public static List subList(List list, int pageSize, int page) {
+        if (null == list || list.size() == 0) {
+            return Collections.EMPTY_LIST;
+        }
+        int from = Math.min(Math.max(pageSize * (page - 1), 0), list.size());
+        int to = Math.max(Math.min(pageSize * page, list.size()), 0);
+        return list.subList(from, to);
     }
 }

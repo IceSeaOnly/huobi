@@ -40,6 +40,7 @@ public abstract class BaseController {
         object.put("msg", msg);
         object.put("data", data);
         object.put("result", result);
+        object.put("status", result ? "SUCCESS" : "FAILED");
 
         return object;
     }

@@ -26,6 +26,12 @@ public class LoginController extends BaseController {
     @Autowired
     private AdminService adminService;
 
+    @RequestMapping("logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "/admin/";
+    }
+
     @RequestMapping(value = "adminLogin", method = RequestMethod.POST)
     @ResponseBody
     public Object adminLogin(HttpServletRequest request, HttpSession session) throws IOException {
