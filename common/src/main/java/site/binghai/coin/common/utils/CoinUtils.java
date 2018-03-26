@@ -62,7 +62,7 @@ public class CoinUtils {
      */
     public static List<Kline> getKlineList(Symbol symbol, KlineTime klineTime, int size) {
         JSONObject data = HttpUtils.sendJSONGet("/market/history/kline",
-                String.format("symbol=%s&period=%s&size=%d", symbol.getBaseCurrency() + symbol.getQuoteCurrency(), klineTime.getTime(), size), null);
+                String.format("symbol=%s&period=%s&size=%d", symbol.getBaseCurrency() + symbol.getQuoteCurrency(), klineTime.getTime(), Math.min(size,2000)), null);
 
         if (data != null && "ok".equals(data.getString("status"))) {
             return data.getJSONArray("data").toJavaList(Kline.class);

@@ -42,12 +42,14 @@ public class WaveIntervalController extends BaseController {
         if (CollectionUtils.isEmpty(list)) {
             return failed("time out");
         }
+
+        String trend = list.get(0).getClose() > list.get(1).getClose() ? "上涨" : "下跌";
         List<Integer> prices = list.stream().map(v -> v.getClose().intValue()).collect(Collectors.toList());
 
         TreeMap<Integer, Integer> maps = new TreeMap<>();
 
         prices.forEach(v -> {
-            int p = v/100;
+            int p = v / 100;
             if (maps.containsKey(p)) {
                 int newV = maps.get(p) + 1;
                 maps.put(p, newV);
@@ -111,14 +113,14 @@ public class WaveIntervalController extends BaseController {
         Collections.sort(fallRange);
 
         JSONArray statisticData = new JSONArray();
-        statisticData.add(buildStatisticData("连续涨", riseList.size()));
-        statisticData.add(buildStatisticData("连续跌", fallList.size()));
-        statisticData.add(buildStatisticData("最久连续涨", riseList.get(riseList.size() - 1)));
-        statisticData.add(buildStatisticData("最久连续跌", fallList.get(fallList.size() - 1)));
+        statisticData.add(buildStatisticData("当前价格", CoinUtils.getLastestKline(symbol).getClose()));
+        statisticData.add(buildStatisticData("当前趋势", trend));
+        statisticData.add(buildStatisticData("连续久涨", riseList.get(riseList.size() - 1)));
+        statisticData.add(buildStatisticData("连续久跌", fallList.get(fallList.size() - 1)));
         statisticData.add(buildStatisticData("平均涨幅", getAvg(riseRange)));
         statisticData.add(buildStatisticData("平均跌幅", getAvg(fallRange)));
 
-        finalResp.put("statisticData",statisticData);
+        finalResp.put("statisticData", statisticData);
         return success(finalResp, "success");
     }
 
@@ -128,7 +130,7 @@ public class WaveIntervalController extends BaseController {
         for (Double aDouble : list) {
             sum += aDouble;
         }
-        return String.format("%.2f",sum / list.size())+"%";
+        return String.format("%.4f", sum / list.size()) + "%";
     }
 
     private Object buildStatisticData(String s, Object v) {
