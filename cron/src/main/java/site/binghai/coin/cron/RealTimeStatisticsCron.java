@@ -64,11 +64,8 @@ public class RealTimeStatisticsCron {
         int evnBadPoints = 0;
 
         for (JinSeNew jinSeNew : news) {
-            if (jinSeNew.getUp_counts() > jinSeNew.getDown_counts()) {
-                evnGoodPoints++;
-            } else {
-                evnBadPoints++;
-            }
+            evnGoodPoints+=jinSeNew.getUp_counts();
+            evnBadPoints+=jinSeNew.getDown_counts();
         }
         resp.put("risedCoinCounts", risedCoinCounts);
         resp.put("allCoinCounts", coints);

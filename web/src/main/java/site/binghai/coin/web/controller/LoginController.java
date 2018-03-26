@@ -29,7 +29,7 @@ public class LoginController extends BaseController {
     @RequestMapping("logout")
     public String logout(HttpSession session){
         session.invalidate();
-        return "/admin/";
+        return "/";
     }
 
     @RequestMapping(value = "adminLogin", method = RequestMethod.POST)

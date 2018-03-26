@@ -83,7 +83,7 @@ public class OrderController extends BaseController {
                 .filter(v -> isCompleteOrder(v.getString("state")))
                 .sorted((a, b) -> b.getLong("created-at") - a.getLong("created-at") > 0 ? 1 : 0)
                 .forEach(v -> {
-                    v.put("total",v.getDouble("amount") * v.getDouble("price"));
+                    v.put("total",doubleSubCut(v.getDouble("amount") * v.getDouble("price"),5));
                     if (v.getString("type").startsWith("sell")) {
                         sellList.add(v);
                     } else {
