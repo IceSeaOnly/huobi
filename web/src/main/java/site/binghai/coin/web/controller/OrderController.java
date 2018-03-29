@@ -167,7 +167,7 @@ public class OrderController extends BaseController {
     }
 
     private double getTradeUSDT(JSONObject v) {
-        if (v.getString("symbol").endsWith("USDT")) {
+        if (v.getString("symbol").toUpperCase().endsWith("USDT")) {
             return v.getDouble("field-cash-amount");
         }
 
