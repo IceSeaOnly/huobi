@@ -6,14 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import site.binghai.coin.common.client.ApiClient;
 import site.binghai.coin.common.entity.JinSeNew;
 import site.binghai.coin.common.entity.Kline;
 import site.binghai.coin.common.entity.KlineTime;
 import site.binghai.coin.common.response.Symbol;
 import site.binghai.coin.common.utils.CoinUtils;
+import site.binghai.coin.common.utils.CommonUtils;
 import site.binghai.coin.data.impl.JinSeNewService;
 import site.binghai.coin.data.impl.MemberCacheService;
 
+import java.io.IOException;
 import java.util.List;
 
 import static site.binghai.coin.data.impl.MemberCacheService.CacheKeys.REAL_TIME_STATISTICS;
@@ -30,6 +33,8 @@ public class RealTimeStatisticsCron {
     private MemberCacheService memberCacheService;
     @Autowired
     private JinSeNewService jinSeNewService;
+    @Autowired
+    private ApiClient apiClient;
 
     @Scheduled(cron = "0 * * * * ? ")
     public void start() {
@@ -64,19 +69,35 @@ public class RealTimeStatisticsCron {
         int evnBadPoints = 0;
 
         for (JinSeNew jinSeNew : news) {
-            evnGoodPoints+=jinSeNew.getUp_counts();
-            evnBadPoints+=jinSeNew.getDown_counts();
+            evnGoodPoints += jinSeNew.getUp_counts();
+            evnBadPoints += jinSeNew.getDown_counts();
         }
         resp.put("risedCoinCounts", risedCoinCounts);
         resp.put("allCoinCounts", coints);
         resp.put("avgRiseRange", String.format("%.4f", (sumRiseRange / coints - 1) * 100) + "%");
         resp.put("maxRiseRange", String.format("%.4f", (maxRiseRange - 1) * 100) + "%");
-        resp.put("accountBtcSum", "Coming");
-        resp.put("accountRmbSum", "Coming");
+        double btcSum = getAccountBtcSum();
+        resp.put("accountBtcSum", CommonUtils.doubleSubCut(btcSum, 5));
+        resp.put("accountRmbSum", getAccountRmbSum(btcSum));
         resp.put("evnGoodPoints", evnGoodPoints);
         resp.put("evnBadPoints", evnBadPoints);
 
         memberCacheService.put(REAL_TIME_STATISTICS, resp);
         log.info("RealTimeStatisticsCron end.");
+    }
+
+    private String getAccountRmbSum(double btcSum) {
+        if (btcSum < 0) return "0.0";
+        return CommonUtils.doubleSubCut(CoinUtils.btc2rmb() * btcSum, 5);
+    }
+
+    private double getAccountBtcSum() {
+        double rs = -1.0;
+        try {
+            rs = apiClient.getBtcBalance();
+        } catch (IOException e) {
+            log.error("getBtcBalance TimeOut Exception.");
+        }
+        return rs;
     }
 }

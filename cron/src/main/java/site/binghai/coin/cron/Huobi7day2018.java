@@ -42,7 +42,7 @@ public class Huobi7day2018 {
         if (lastCoin != null && !lastCoin.equals(currency)) {
             makeDealOf(currency);
         } else {
-            logger.info("未到开始时间,已备BTC:{}", apiClient.getBtcBalance());
+            logger.info("未到开始时间,已备BTC:{}", apiClient.getSpotBtcBalance());
         }
         lastCoin = currency;
         logger.info("当前火币种类: {}", currency.toUpperCase());

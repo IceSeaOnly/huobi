@@ -80,10 +80,10 @@ public class OrderController extends BaseController {
         List<JSONObject> sellList = new ArrayList<>();
 
         list.stream()
-                .filter(v -> isCompleteOrder(v.getString("state")))
+                .filter(v -> isFilledOrder(v))
                 .sorted((a, b) -> b.getLong("created-at") - a.getLong("created-at") > 0 ? 1 : 0)
                 .forEach(v -> {
-                    v.put("total",doubleSubCut(v.getDouble("amount") * v.getDouble("price"),5));
+                    v.put("total", doubleSubCut(v.getDouble("amount") * v.getDouble("price"), 5));
                     if (v.getString("type").startsWith("sell")) {
                         sellList.add(v);
                     } else {
@@ -132,12 +132,12 @@ public class OrderController extends BaseController {
 
             if (v.getString("type").startsWith("buy")) {
                 buy++;
-                buyExpect += ifTradeFilled(v);
+                buyExpect += isFilledOrder(v) ? 0 : 1;
                 buySum += getTradeUSDT(v);
                 buySumExpect += getExpectTradeUSDT(v);
             } else if (v.getString("type").startsWith("sell")) {
                 sell++;
-                sellExpect += ifTradeFilled(v);
+                sellExpect += isFilledOrder(v) ? 0 : 1;
                 sellSum += getTradeUSDT(v);
                 sellSumExpect += getExpectTradeUSDT(v);
             }
@@ -155,7 +155,7 @@ public class OrderController extends BaseController {
     }
 
     private double getExpectTradeUSDT(JSONObject v) {
-        if (ifTradeFilled(v) == 0) {
+        if (isFilledOrder(v)) {
             return 0.0;
         }
 
@@ -177,8 +177,8 @@ public class OrderController extends BaseController {
     /**
      * 当交易完成时，返回0，否则1
      */
-    private int ifTradeFilled(JSONObject v) {
-        return v.getString("state").equals("filled") ? 0 : 1;
+    private boolean isFilledOrder(JSONObject v) {
+        return v.getString("state").equals("filled");
     }
 
     private Object buildHistoryDisplayItem(String title, Object count, Object expect) {

@@ -138,7 +138,7 @@ public class ApiClient {
         return null;
     }
 
-    public double getBtcBalance() throws IOException {
+    public double getSpotBtcBalance() throws IOException {
         double[] rs = {0.0};
         List<Account> accounts = getAccounts();
         accounts.forEach(account -> {
@@ -154,18 +154,16 @@ public class ApiClient {
         return rs[0];
     }
 
-    public double getUsdtBalance() throws IOException {
+    public double getBtcBalance() throws IOException {
         double[] rs = {0.0};
         List<Account> accounts = getAccounts();
         accounts.forEach(account -> {
-            if (account.getType().equals("spot")) {
-                AccountBalance balance = accountBlance(account.getId());
-                balance.getList().forEach(cc -> {
-                    if (cc.getCurrency().toUpperCase().equals("USDT")) {
-                        rs[0] += cc.getBalance();
-                    }
-                });
-            }
+            AccountBalance balance = accountBlance(account.getId());
+            balance.getList().forEach(cc -> {
+                if (cc.getCurrency().toUpperCase().equals("BTC")) {
+                    rs[0] += cc.getBalance();
+                }
+            });
         });
         return rs[0];
     }
