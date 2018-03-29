@@ -168,11 +168,7 @@ public class OrderController extends BaseController {
 
     private double getTradeUSDT(JSONObject v) {
         if (v.getString("symbol").endsWith("USDT")) {
-            Double amount = v.getDouble("amount");
-            Double price = v.getDouble("price");
-            if (amount != null && price != null) {
-                return amount * price;
-            }
+            return v.getDouble("field-cash-amount");
         }
 
         return 0.0;
