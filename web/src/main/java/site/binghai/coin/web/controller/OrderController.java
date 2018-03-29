@@ -84,7 +84,7 @@ public class OrderController extends BaseController {
                 .sorted((a, b) -> b.getLong("created-at") - a.getLong("created-at") > 0 ? 1 : 0)
                 .forEach(v -> {
                     v.put("total", CommonUtils.removeZero(v.getDouble("field-cash-amount")));
-                    v.put("fieldFees",doubleSubCut(v.getDoubleValue("fieldFees"),4));
+                    v.put("fieldFees",String.format("%.4f",v.getDoubleValue("fieldFees")));
                     if(v.getString("type").contains("market")){
                         v.put("price","市价");
                     }
