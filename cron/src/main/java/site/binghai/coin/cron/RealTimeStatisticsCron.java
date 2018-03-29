@@ -77,7 +77,7 @@ public class RealTimeStatisticsCron {
         resp.put("avgRiseRange", String.format("%.4f", (sumRiseRange / coints - 1) * 100) + "%");
         resp.put("maxRiseRange", String.format("%.4f", (maxRiseRange - 1) * 100) + "%");
         double btcSum = getAccountBtcSum();
-        resp.put("accountBtcSum", CommonUtils.doubleSubCut(btcSum, 5));
+        resp.put("accountBtcSum", CommonUtils.doubleSubCut(btcSum, 4));
         resp.put("accountRmbSum", getAccountRmbSum(btcSum));
         resp.put("evnGoodPoints", evnGoodPoints);
         resp.put("evnBadPoints", evnBadPoints);
@@ -88,7 +88,7 @@ public class RealTimeStatisticsCron {
 
     private String getAccountRmbSum(double btcSum) {
         if (btcSum < 0) return "0.0";
-        return CommonUtils.doubleSubCut(CoinUtils.btc2rmb() * btcSum, 5);
+        return CommonUtils.doubleSubCut(CoinUtils.btc2rmb() * btcSum, 4);
     }
 
     private double getAccountBtcSum() {

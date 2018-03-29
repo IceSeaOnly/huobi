@@ -83,7 +83,11 @@ public class OrderController extends BaseController {
                 .filter(v -> isFilledOrder(v))
                 .sorted((a, b) -> b.getLong("created-at") - a.getLong("created-at") > 0 ? 1 : 0)
                 .forEach(v -> {
-                    v.put("total", doubleSubCut(v.getDouble("amount") * v.getDouble("price"), 5));
+                    v.put("total", CommonUtils.removeZero(v.getDouble("field-cash-amount")));
+                    v.put("fieldFees",doubleSubCut(v.getDoubleValue("fieldFees"),4));
+                    if(v.getString("type").contains("market")){
+                        v.put("price","市价");
+                    }
                     if (v.getString("type").startsWith("sell")) {
                         sellList.add(v);
                     } else {
