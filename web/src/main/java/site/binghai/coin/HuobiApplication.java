@@ -14,8 +14,8 @@ import java.util.Set;
 @EnableScheduling
 @ComponentScan("site.binghai.coin.*")
 public class HuobiApplication {
-    public static void main(String[] args) {
-        SetupUtils.onSystemStart(args);
+    public static void main(String[] args) throws Exception {
+        SetupUtils.onSystemStart(args,null);
         if (SetupUtils.envHasParam("-use:proxy")) {
             System.out.println("Net Proxy Switch Active.");
 

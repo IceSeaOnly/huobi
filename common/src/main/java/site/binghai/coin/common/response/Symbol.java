@@ -11,6 +11,7 @@ import lombok.ToString;
  * price-precision 价格精度位数（0为个位）
  * amount-precision 数量精度位数（0为个位）
  * symbol-partition main主区，innovation创新区，bifurcation分叉区
+ *
  * @ huobi
  */
 @Data
@@ -37,7 +38,11 @@ public class Symbol {
         this.quoteCurrency = quoteCurrency;
     }
 
-    public String getSimpleName(){
-        return (baseCurrency+"/"+quoteCurrency).toUpperCase();
+    public String getSimpleName() {
+        return (baseCurrency + "/" + quoteCurrency).toUpperCase();
+    }
+
+    public String toStringName() {
+        return (baseCurrency + quoteCurrency).toUpperCase();
     }
 }
