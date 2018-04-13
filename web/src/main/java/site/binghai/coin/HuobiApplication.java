@@ -6,13 +6,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import site.binghai.coin.common.utils.SetupUtils;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 @SpringBootApplication
-@EnableScheduling
 @ComponentScan("site.binghai.coin.*")
+@EnableScheduling
 public class HuobiApplication {
     public static void main(String[] args) {
         SetupUtils.onSystemStart(args);
